@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Our Team - NEXTGEN CTO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#000000",
+                        "on-primary-fixed-variant": "#474746",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3f3",
+                        "surface": "#f9f9f9",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-secondary-fixed": "#3c0800",
+                        "secondary-fixed-dim": "#ffb4a2",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#1c1b1b",
+                        "primary-fixed": "#e5e2e1",
+                        "inverse-primary": "#c8c6c5",
+                        "tertiary-fixed": "#e2e2e2",
+                        "tertiary": "#000000",
+                        "tertiary-container": "#1a1c1c",
+                        "outline": "#747878",
+                        "surface-variant": "#e2e2e2",
+                        "surface-bright": "#f9f9f9",
+                        "on-secondary-fixed-variant": "#891d00",
+                        "inverse-on-surface": "#f1f1f1",
+                        "secondary": "#FF5F36", /* Updated to match accent color request */
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#858383",
+                        "surface-tint": "#5f5e5e",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-dim": "#dadada",
+                        "on-tertiary-container": "#838484",
+                        "on-surface": "#1a1c1c",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface-variant": "#444748",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "primary-container": "#1c1b1b",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "on-background": "#1a1c1c",
+                        "secondary-container": "#FF5F36",
+                        "surface-container": "#eeeeee",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c4c7c7",
+                        "on-secondary-container": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "secondary-fixed": "#ffdbd2",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "unit": "4px",
+                        "stack-lg": "80px",
+                        "stack-sm": "12px",
+                        "gutter": "24px",
+                        "stack-md": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "annotation": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "display-lg": ["Space Grotesk"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["Space Grotesk"],
+                        "display-lg-mobile": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "annotation": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["56px", {"lineHeight": "1.1", "letterSpacing": "-0.03em", "fontWeight": "700"}], /* Reduced ~20% from 72px */
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["38px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}] /* Reduced ~20% from 48px */
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .text-stroke-rough {
+            -webkit-text-stroke: 1px #FF5F36;
+            color: transparent;
+            font-style: italic;
+        }
+        .btn-shadow-offset {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .btn-shadow-offset::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #FF5F36;
+            z-index: -1;
+            transform: translate(0, 0);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: inherit;
+        }
+        .btn-shadow-offset:hover {
+            transform: translate(-4px, -4px);
+        }
+        .btn-shadow-offset:hover::before {
+            transform: translate(4px, 4px);
+        }
+        .card-shadow-offset {
+            position: relative;
+        }
+        .card-shadow-offset::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: -6px; bottom: -6px;
+            background-color: #1a1c1c;
+            z-index: -1;
+            border-radius: inherit;
+        }
+        .card-shadow-accent::before {
+            background-color: #FF5F36;
+        }
+        
+        .masonry-col { flex: 1; min-width: 0; }
+        
+        .grid-line {
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+        
+        .handwritten {
+            font-family: 'Caveat', cursive; /* Optional: if you want a true handwritten font, but stick to requested fonts if not loaded */
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 border-b border-primary bg-background/80 backdrop-blur-sm dark:bg-background dark:border-primary-fixed">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 w-full">
+<div class="font-headline-lg text-headline-lg font-bold tracking-tighter text-primary dark:text-primary-fixed">
+                NEXTGEN CTO
+            </div>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-body-md hover:text-secondary transition-colors duration-200" href="#">The Vision</a>
+<a class="text-secondary dark:text-secondary-fixed-dim font-bold border-b-2 border-secondary font-body-md hover:text-secondary transition-colors duration-200 translate-y-px" href="#">Our Team</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-body-md hover:text-secondary transition-colors duration-200" href="#">Culture</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-body-md hover:text-secondary transition-colors duration-200" href="#">Lab</a>
+</nav>
+<div class="hidden md:block">
+<button class="bg-primary text-on-primary font-body-md px-6 py-3 rounded-none btn-shadow-offset">
+                    Join the Squad
+                </button>
+</div>
+<!-- Mobile Menu Icon (Visual Only) -->
+<button class="md:hidden text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg relative overflow-hidden border-b border-primary">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-6 flex flex-col gap-stack-md z-10 relative pr-8">
+<div class="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">
+                        THE HUMANS BEHIND NEXTGEN CTO
+                    </div>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary relative">
+                        Meet the people building careers, breaking bugs, and occasionally fixing production at 2 AM.
+                        <div class="absolute -bottom-6 right-0 text-secondary font-annotation text-annotation transform rotate-[-8deg] flex items-center gap-2 handwritten whitespace-nowrap">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>"Yes, we read the bug reports."</span>
+</div>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-4 max-w-xl">
+                        We are a small team building practical learning, mentorship, and career-readiness experiences for students across India.
+                    </p>
+</div>
+<div class="lg:col-span-6 relative mt-16 lg:mt-0">
+<div class="relative w-full aspect-[4/3] border border-primary p-4 card-shadow-accent bg-surface">
+<!-- Quirky Noticeboard layout simulation -->
+<div class="absolute -top-4 -left-4 px-3 py-1 border border-primary font-label-caps text-label-caps bg-secondary-container text-on-secondary-container transform -rotate-6 z-20 shadow-md">
+                            Founder mode: always on
+                        </div>
+<div class="absolute bottom-10 -right-6 px-3 py-1 border border-primary font-annotation text-annotation bg-surface flex items-center gap-2 z-20 shadow-md transform rotate-3">
+<span class="w-2 h-2 rounded-full bg-error"></span> Chai status: critical
+                        </div>
+<div class="absolute top-1/2 -left-6 px-3 py-1 border border-primary font-annotation text-annotation bg-surface z-20 shadow-md transform -rotate-12">
+                            Probably debugging
+                        </div>
+<div class="w-full h-full bg-surface-container-highest border border-primary overflow-hidden relative grid grid-cols-2 grid-rows-2 gap-2 p-2">
+<div class="col-span-1 row-span-2 bg-gray-300 border border-primary grayscale hover:grayscale-0 transition-all duration-300 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBDKj0UPvd2hsW9SfLb5Z1vDIQcvenh8Q3OXuk6u-sz8bXLjc8Xf39stjJUSHqzefCd433Fwew7Z6-aQmt8W8-AFB1yWwWL6GSRwLfb13AAxU7XqpnPiA77MbAOzTSQ_4A3OmenNuvtDMYzXP62I6GkRi2wOxTTGXUEaeNjHRZN5-hPn9uUepk1DqF5rvdMcWXeY-GRlLADuOz5AM_PgwzeRmWVqYgkkfc2fCHW4NsaEGIUUSLr0c__');"></div>
+<div class="col-span-1 row-span-1 bg-gray-400 border border-primary grayscale hover:grayscale-0 transition-all duration-300 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAfinjBkuh_fBeYmqcFGG1C2ZD1K24GNLheI_2X3CbFRMZexRjd74aE0I3tWAgShD2E5MQKoPhH4MiMDSLpFkw1y8pvfsm2YeeTxtPo_evjCFtMoZGh3PQtAMm6542A35oi5D_VGoiEtHqesNA2CYUQMvWKa4p1Gk5TNlhZP24tp5HW5LiSxbLiZDFFhdz01ThwXbFsgX85uX1zq4GWoIWgKW0QqJ2-CY_XV5of2qtlsrwsaElbt6By');"></div>
+<div class="col-span-1 row-span-1 bg-gray-500 border border-primary grayscale hover:grayscale-0 transition-all duration-300 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5qdRUBQF33ItihioRoRl22P79b7-5h142szQAYSwzEDPLy0LixODjKFJu5rurTA53a013U1nLvPNgUfuvsn3xJ-C5_057jy9G88Ri1Pb-Ce_Rc0GDZQn73OYTrnYlxW3K7xFxr78iLFVJsPGYV1day0T7_Ve65oIj408KBA8de97SzqLsCCo0cOLX6Z93LkKZbSiuY4Wb9_MeaI25L9v7YouCBLSfatFUGsOHk_2p-pkIyb7VRFss');"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Fun Intermission Strip -->
+<section class="border-b border-primary bg-primary text-on-primary py-6 overflow-hidden relative">
+<div class="flex whitespace-nowrap animate-[marquee_20s_linear_infinite] gap-12 items-center font-headline-lg text-headline-lg uppercase tracking-wider">
+<span>OPEN TABS: 46</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<span>CHAI CONSUMED: CONFIDENTIAL</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<span>BUGS MARKED "CANNOT REPRODUCE": 12</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<span>PRODUCTION CONFIDENCE: OPTIMISTIC</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<!-- Duplicate for seamless scroll -->
+<span>OPEN TABS: 46</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<span>CHAI CONSUMED: CONFIDENTIAL</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<span>BUGS MARKED "CANNOT REPRODUCE": 12</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+<span>PRODUCTION CONFIDENCE: OPTIMISTIC</span>
+<span class="text-secondary material-symbols-outlined text-3xl">star</span>
+</div>
+<style>
+                @keyframes marquee {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+            </style>
+</section>
+<!-- Founder Spotlight -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg border-b border-primary bg-surface-container-low relative">
+<div class="absolute top-0 left-0 p-4 font-headline-xl text-secondary opacity-50">01</div>
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-start">
+<div class="md:col-span-5 relative">
+<div class="w-full aspect-[3/4] border-2 border-primary bg-gray-300 relative grayscale hover:grayscale-0 transition-all duration-500 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCWCS6TMIbiIo9sbqiMjcZQEzlA1jIzcTejHBhbJ_1rsFLrAPETBAGqLdpleUOZ-uT8t3ux6HP77htKrDk1PZ0ODaRsTilGWo0Quc3nMu_QzfiEk0y0oVmqKRRDQRfvolszQjJMLsa-Zu1HPvEOjXOyPEq8ZnvjkWY-hBG5CegyIjUfC5pB_G6vAH8e1Zm0e10Al-AsYvmZk3Tq4XIYyeCvFQA9TIDVjJqfd2iGqSioL0MiHnf1YWjF');">
+<div class="absolute -right-6 top-1/4 px-3 py-1 border border-primary font-annotation text-annotation bg-surface z-20 transform rotate-6">
+                    Started all this
+                </div>
+<div class="absolute -left-4 bottom-1/4 px-3 py-1 border border-primary font-annotation text-annotation bg-surface z-20 transform -rotate-3">
+                    Still reviewing every feature
+                </div>
+</div>
+</div>
+<div class="md:col-span-7 md:pl-12 flex flex-col gap-6 mt-8 md:mt-12">
+<div>
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary tracking-tight">The person who said, 'Let’s build our own platform.'</h2>
+</div>
+<div class="border-t border-primary pt-6 mt-4">
+<h3 class="font-headline-lg text-headline-lg font-bold">Jane Doe</h3>
+<p class="font-label-caps text-secondary tracking-widest uppercase mt-1">Founder &amp; CEO</p>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Former big tech engineer turned educator. Obsessed with scalable systems and making sure the "Join" button never breaks on launch day. Believes that code is poetry, but only if it compiles.
+            </p>
+<blockquote class="border-l-4 border-secondary pl-6 py-2 my-4 font-headline-lg italic text-on-surface">
+                "Build something students can actually use."
+            </blockquote>
+<div class="flex gap-4 mt-4">
+<a class="border border-primary px-4 py-2 hover:bg-primary hover:text-on-primary transition-colors font-label-caps text-label-caps uppercase" href="#">LinkedIn</a>
+<a class="border border-primary px-4 py-2 hover:bg-primary hover:text-on-primary transition-colors font-label-caps text-label-caps uppercase" href="#">YouTube</a>
+<a class="border border-primary px-4 py-2 hover:bg-primary hover:text-on-primary transition-colors font-label-caps text-label-caps uppercase" href="#">Instagram</a>
+<a class="border border-primary px-4 py-2 hover:bg-primary hover:text-on-primary transition-colors font-label-caps text-label-caps uppercase" href="#">Website</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Team Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg border-b border-primary bg-background">
+<div class="max-w-7xl mx-auto flex flex-col gap-stack-md">
+<div class="flex justify-between items-end border-b border-primary pb-4">
+<h2 class="font-display-lg-mobile md:font-display-lg text-primary">The people keeping the tabs open</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 border-t border-l border-primary">
+<!-- Featured Wide -->
+<div class="md:col-span-2 grid-line p-6 flex flex-col md:flex-row gap-6 relative group hover:bg-surface-container-low transition-colors">
+<div class="absolute top-4 right-4 font-headline-lg text-secondary opacity-50">02</div>
+<div class="w-full md:w-1/2 aspect-square border border-primary bg-gray-200 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAgLjLaEIElApaC5g4yZVcw9PT7Q5DgEcq5q_Ua1gWJYbxdG67mHTYgkYyouKgf2PEWWzpzghmXhDvylKJEnv4Pljj1XTlWg2QvdkokszWNqB712ak8_5pJEz-Y5zqyyUb8aux8sgsL4aL7oCaYEzLkZ1YMn9VtU02oTS4bSv61AAbCwmLXmL8f1o3ECc0fd735AaG6gJScphg9W5lGx0v1BePqq0w70EHekN9hhLMjcfWe2oslwNib');"></div>
+<div class="w-full md:w-1/2 flex flex-col justify-center">
+<div class="flex gap-2 mb-4">
+<span class="px-2 py-1 bg-primary text-on-primary font-label-caps text-[10px] uppercase">Design Police</span>
+<span class="px-2 py-1 border border-primary font-label-caps text-[10px] uppercase">Mumbai</span>
+</div>
+<h3 class="font-headline-xl font-bold">Alex Chen</h3>
+<p class="font-label-caps text-secondary mb-4">Lead Product Designer</p>
+<p class="font-body-md text-on-surface-variant">Makes things look good while secretly judging everyone's font choices. Master of the 8pt grid.</p>
+<div class="mt-auto pt-6 flex gap-3">
+<a class="text-sm font-bold underline hover:text-secondary" href="#">Twitter</a>
+<a class="text-sm font-bold underline hover:text-secondary" href="#">Dribbble</a>
+</div>
+</div>
+</div>
+<!-- Portrait 1 -->
+<div class="grid-line p-6 flex flex-col relative group hover:bg-surface-container-low transition-colors">
+<div class="absolute top-4 right-4 font-headline-lg text-secondary opacity-50">03</div>
+<div class="w-full aspect-[4/5] border border-primary bg-gray-200 mb-6 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDcEoT6RnPhvBNJqGS4fWbEev4ckdp5rdCLAFxHkq0dKi5n-ILkno-gXvuaMu1SK2QhSUeZpaUHuPJxsvT5biYn1P4T98hCHfAuzPQRA0MhL04SVFmFm0P9Cf_GaQCnU1Rec5VF5q49pV56wEr9n-T5ZGe8O1TIVpB5U0Gke3YQDCmCAJonrxujqftz3Bd8dIavdS48qnbYj8qOip4oCKlf6twOtENrLlWKlK1H7RX63MLobQQcEEBc');"></div>
+<div class="flex gap-2 mb-3">
+<span class="px-2 py-1 bg-secondary text-white font-label-caps text-[10px] uppercase">Bug Hunter</span>
+</div>
+<h3 class="font-headline-lg font-bold">Sam Patel</h3>
+<p class="font-label-caps text-secondary mb-2">Senior Backend Eng</p>
+<p class="font-body-md text-on-surface-variant mb-4">Thrives on complex database queries and black coffee.</p>
+<div class="mt-auto flex gap-3">
+<a class="text-sm font-bold underline hover:text-secondary" href="#">GitHub</a>
+</div>
+</div>
+<!-- Portrait 2 -->
+<div class="grid-line p-6 flex flex-col relative group hover:bg-surface-container-low transition-colors">
+<div class="absolute top-4 right-4 font-headline-lg text-secondary opacity-50">04</div>
+<div class="w-full aspect-[4/5] border border-primary bg-gray-200 mb-6 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_GxGzLLvkdOKa8mv8auD46hkSKhiGGHyqDZxCLvSiw89c8HGwGauXIiGYQ2FI3w8Akmajp9S2GeWSOxSYe7626QcYM-iqR8mMjbWfkz2QJ-1IrENtg5yluBDl3GxYYLRyC0Fr81m3tIS1O2iphhQ95u-kv3FZFo0E3-u_u7GB0pDqSLn0Y5NBCvUa6obvaizW_IKQPEG_7MpGQdSKPP6NqBCtHgfkAvEypBgdkx_eZJYMj_ertAI3');"></div>
+<div class="flex gap-2 mb-3">
+<span class="px-2 py-1 bg-primary text-white font-label-caps text-[10px] uppercase">Content Queen</span>
+</div>
+<h3 class="font-headline-lg font-bold">Priya Sharma</h3>
+<p class="font-label-caps text-secondary mb-2">Curriculum Lead</p>
+<p class="font-body-md text-on-surface-variant mb-4">Translates highly technical jargon into human words.</p>
+<div class="mt-auto flex gap-3">
+<a class="text-sm font-bold underline hover:text-secondary" href="#">LinkedIn</a>
+</div>
+</div>
+<!-- Horizontal -->
+<div class="md:col-span-2 grid-line p-6 flex flex-col sm:flex-row items-center gap-6 relative group hover:bg-surface-container-low transition-colors">
+<div class="absolute top-4 right-4 font-headline-lg text-secondary opacity-50">05</div>
+<div class="w-32 h-32 rounded-full border border-primary bg-gray-200 flex-shrink-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHg_9Q3e-mcbghZZXrYtOCPhrs06t3GPgtdpVaXgdUHQSbSaX8jE-MagjHeL9Nh5Gfnj6SAP0Jf7qbra5z5JKpL9g-uaoEbXsjSMfzmHYGONM2abB7rSzypNoHBRkLPpuAiwia2xvr04elEGo2uKflnhfU1psQr_grL52s-fDe-9w5BjWmlHPvQshX8lqgWA6h9_gDwyNbUKem-nrL8D8xS_5LZ5BkS8_o2Mc_KXfMO_6xgrGfsmmj');"></div>
+<div>
+<div class="flex gap-2 mb-2">
+<span class="px-2 py-1 bg-surface-variant text-on-surface font-label-caps text-[10px] uppercase">Intern</span>
+</div>
+<h3 class="font-headline-lg font-bold">Rahul K.</h3>
+<p class="font-label-caps text-secondary mb-2">Frontend Developer</p>
+<p class="font-body-md text-on-surface-variant">Just happy to be here. Mostly centers divs.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How We Work & Behind the Scenes -->
+<section class="grid grid-cols-1 lg:grid-cols-2 border-b border-primary">
+<!-- How We Work -->
+<div class="p-margin-mobile md:p-margin-desktop border-r border-primary bg-surface-container-low relative">
+<h2 class="font-headline-xl mb-12">How We Work</h2>
+<div class="flex flex-col border-t border-primary">
+<div class="flex py-6 border-b border-primary items-start gap-6 hover:pl-4 transition-all">
+<span class="font-label-caps text-secondary mt-1">01</span>
+<div>
+<h4 class="font-headline-lg mb-2">Students First</h4>
+<p class="font-body-md text-on-surface-variant">If it doesn't help them learn or get hired, we don't build it.</p>
+</div>
+</div>
+<div class="flex py-6 border-b border-primary items-start gap-6 hover:pl-4 transition-all">
+<span class="font-label-caps text-secondary mt-1">02</span>
+<div>
+<h4 class="font-headline-lg mb-2">Ship. Learn. Improve.</h4>
+<p class="font-body-md text-on-surface-variant">Perfection is the enemy of deployment.</p>
+</div>
+</div>
+<div class="flex py-6 border-b border-primary items-start gap-6 hover:pl-4 transition-all">
+<span class="font-label-caps text-secondary mt-1">03</span>
+<div>
+<h4 class="font-headline-lg mb-2">Explain Everything</h4>
+<p class="font-body-md text-on-surface-variant">Documentation isn't an afterthought, it's the product.</p>
+</div>
+</div>
+<div class="flex py-6 border-b border-primary items-start gap-6 hover:pl-4 transition-all">
+<span class="font-label-caps text-secondary mt-1">04</span>
+<div>
+<h4 class="font-headline-lg mb-2">High Standards, Low Drama</h4>
+<p class="font-body-md text-on-surface-variant">We argue about code, not ego.</p>
+</div>
+</div>
+</div>
+<div class="mt-8 p-4 border border-primary font-annotation italic bg-surface inline-block transform -rotate-2">
+            * Meetings that could have been messages are under investigation.
+        </div>
+</div>
+<!-- Behind the Scenes -->
+<div class="p-margin-mobile md:p-margin-desktop bg-surface relative overflow-hidden flex flex-col justify-center min-h-[500px]">
+<h2 class="font-headline-lg absolute top-margin-desktop left-margin-desktop z-10 bg-surface px-2 border border-primary">Status Board</h2>
+<div class="relative w-full max-w-md mx-auto aspect-square border-2 border-primary bg-yellow-100 p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform rotate-1">
+<!-- Sticky Notes Simulation -->
+<div class="absolute top-10 left-10 w-32 h-32 bg-pink-200 border border-primary p-3 shadow-sm transform -rotate-6 flex items-center justify-center text-center font-annotation">
+                Deploying to prod 🚀
+            </div>
+<div class="absolute top-32 right-12 w-40 h-32 bg-green-200 border border-primary p-3 shadow-sm transform rotate-3 flex items-center justify-center text-center font-annotation">
+                Someone is fixing the deployment 😭
+            </div>
+<div class="absolute bottom-12 left-20 w-36 h-36 bg-blue-200 border border-primary p-3 shadow-sm transform -rotate-12 flex items-center justify-center text-center font-annotation">
+                Order more coffee beans
+            </div>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white border border-dashed border-primary rounded-full flex items-center justify-center text-primary/50 text-sm">
+                (tape here)
+            </div>
+</div>
+</div>
+</section>
+<!-- Closing CTA -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-secondary text-white text-center flex flex-col items-center border-b-4 border-primary">
+<h2 class="font-display-lg-mobile md:font-display-lg text-white max-w-4xl mb-8 leading-tight">
+        Small team. Big mission.<br/>
+<span class="italic font-headline-xl opacity-90">An unreasonable number of open tabs.</span>
+</h2>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary text-on-primary font-body-lg font-bold px-8 py-4 rounded-none border-2 border-primary hover:bg-white hover:text-primary transition-colors btn-shadow-offset shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] before:hidden hover:shadow-none hover:translate-y-1 hover:translate-x-1">
+            Join the Squad
+        </button>
+<button class="bg-transparent text-white font-body-lg font-bold px-8 py-4 rounded-none border-2 border-white hover:bg-white hover:text-secondary transition-colors">
+            Read Our Manifesto
+        </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container border-t-2 border-primary">
+<div class="flex flex-col gap-stack-md px-margin-desktop py-stack-lg w-full">
+<div class="font-headline-xl text-headline-xl text-on-primary tracking-tighter">
+                NEXTGEN CTO
+            </div>
+<div class="flex flex-wrap gap-gutter">
+<a class="font-label-caps text-label-caps text-on-primary/60 hover:text-secondary-container transition-all hover:-translate-y-1 block" href="#">Twitter</a>
+<a class="font-label-caps text-label-caps text-on-primary/60 hover:text-secondary-container transition-all hover:-translate-y-1 block" href="#">LinkedIn</a>
+<a class="font-label-caps text-label-caps text-on-primary/60 hover:text-secondary-container transition-all hover:-translate-y-1 block" href="#">Github</a>
+<a class="font-label-caps text-label-caps text-on-primary/60 hover:text-secondary-container transition-all hover:-translate-y-1 block" href="#">Email</a>
+</div>
+<div class="font-label-caps text-label-caps text-on-primary/40 pt-stack-sm border-t border-on-primary/20 mt-auto">
+                © 2024 NEXTGEN CTO — BUILT FOR THE BOLD.
+            </div>
+</div>
+</footer>
+</body></html>

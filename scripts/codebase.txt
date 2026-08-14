@@ -1,0 +1,7 @@
+Codebase Scan Report
+================================================================================
+Generated: 2026-07-11 08:55:22 India Standard Time
+Root: D:\NextGen\scripts
+Ignored folders: .agent, .agents, .cursor, .env, .env.development, .env.development.local, .env.local, .env.production, .env.production.local, .env.test, .env.test.local, .gemini, .git, .next, .scripts, .skills, .swc, .turbo, .vercel, __pycache__, build, coverage, dist, node_modules, out
+Visited files (all): 2
+Included files: 0

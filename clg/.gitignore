@@ -1,0 +1,38 @@
+# antigravity-kit (local agent templates)
+# debug
+# dependencies
+# husky and local hook caches
+# local env files
+# misc
+# next.js
+# production
+# testing
+# typescript
+# vercel
+*.pem
+*.tsbuildinfo
+.agent/
+.DS_Store
+.env
+.env*
+.env*.local
+.eslintcache
+.fallowrc*
+.husky/
+.pnp.js
+.prettier-cache
+.prettiercache
+.vercel
+.yarn/install-state.gz
+/.next/
+/.pnp
+/build
+/coverage
+/node_modules
+codebase*
+docs
+next-env.d.ts
+npm-debug.log*
+out/
+yarn-debug.log*
+yarn-error.log*

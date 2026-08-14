@@ -1,0 +1,72 @@
+﻿.agents
+.vscode
+clg
+landing
+lms
+nextgen-cto-lms-product-super-admin
+out
+phase5-local-backup
+scripts
+stitchdesign
+super
+Testing
+ca-coupon-usages-insert-probe.json
+codebase.txt
+ctobhaiya.jpeg
+Email Strategy Patterns Across Popular Indian LMS Platforms.pdf
+lms-build-output.txt
+lms-tsc-errors.txt
+LMS_FAQs_Expanded.pdf
+multi-plan-pricing-spec.md
+multi-plan-pricing-spec.original.md
+nextgen_cto_12_email_html_templates.md
+shell_test_out.txt
+skills-lock.json
+student-lms-local-backup.patch
+super-admin-staged-backup.patch
+super-admin-working-tree-backup.patch
+test_razorpay.js
+test_razorpay_no_config.js
+tpstreams.md
+tsc-out.txt
+tsc-out2.txt
+Youtube.mp4
+_probe_root.txt
+.agent
+.cursor
+.next
+app
+docs
+node_modules
+playwright
+playwright-report
+public
+scripts
+test-results
+tests
+.env
+.env.example
+.gitignore
+next-env.d.ts
+next.config.ts
+package-lock.json
+package.json
+playwright.config.ts
+tsconfig.json
+tsconfig.tsbuildinfo
+_agent_git_probe.txt
+origin	https://github.com/NextGen-CTO/nextgen-cto-lms-product.git (fetch)
+origin	https://github.com/NextGen-CTO/nextgen-cto-lms-product.git (push)
+  backup/student-lms-fixes-before-pull
+* main
+  stage
+  test/playwright-student-lms
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main
+  remotes/origin/redesign
+  remotes/origin/secondary
+  remotes/origin/stage
+globals.css
+layout.tsx
+page.tsx
+DONE

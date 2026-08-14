@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" fill="none" role="img" aria-label="Campus movement network">
+  <rect width="720" height="420" rx="24" fill="#0f1116"/>
+  <defs>
+    <radialGradient id="centerGlow" cx="0.5" cy="0.45" r="0.35">
+      <stop stop-color="#FF5F36" stop-opacity="0.2"/>
+      <stop offset="1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="720" height="420" rx="24" fill="url(#centerGlow)"/>
+  <line x1="360" y1="210" x2="120" y2="80" stroke="#FF5F36" stroke-opacity="0.35" stroke-width="1"/>
+  <line x1="360" y1="210" x2="600" y2="90" stroke="#FF5F36" stroke-opacity="0.35" stroke-width="1"/>
+  <line x1="360" y1="210" x2="100" y2="300" stroke="#FF5F36" stroke-opacity="0.35" stroke-width="1"/>
+  <line x1="360" y1="210" x2="620" y2="310" stroke="#FF5F36" stroke-opacity="0.35" stroke-width="1"/>
+  <line x1="360" y1="210" x2="360" y2="60" stroke="#FF5F36" stroke-opacity="0.35" stroke-width="1"/>
+  <line x1="360" y1="210" x2="360" y2="360" stroke="#FF5F36" stroke-opacity="0.35" stroke-width="1"/>
+  <circle cx="360" cy="210" r="44" fill="#1a1c1c" stroke="#FF5F36" stroke-width="2"/>
+  <text x="360" y="206" text-anchor="middle" fill="#FF5F36" font-family="system-ui,sans-serif" font-size="9" font-weight="700">NextGen</text>
+  <text x="360" y="220" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,sans-serif" font-size="9" font-weight="700">CTO</text>
+  <circle cx="120" cy="80" r="28" fill="#242628" stroke="#353b45"/>
+  <text x="120" y="85" text-anchor="middle" fill="#e8eaef" font-family="system-ui,sans-serif" font-size="11" font-weight="600">SK</text>
+  <circle cx="600" cy="90" r="28" fill="#242628" stroke="#353b45"/>
+  <text x="600" y="95" text-anchor="middle" fill="#e8eaef" font-family="system-ui,sans-serif" font-size="11" font-weight="600">AR</text>
+  <circle cx="100" cy="300" r="28" fill="#242628" stroke="#353b45"/>
+  <text x="100" y="305" text-anchor="middle" fill="#e8eaef" font-family="system-ui,sans-serif" font-size="11" font-weight="600">MJ</text>
+  <circle cx="620" cy="310" r="28" fill="#242628" stroke="#353b45"/>
+  <text x="620" y="315" text-anchor="middle" fill="#e8eaef" font-family="system-ui,sans-serif" font-size="11" font-weight="600">RP</text>
+  <circle cx="360" cy="60" r="24" fill="#242628" stroke="#353b45"/>
+  <text x="360" y="65" text-anchor="middle" fill="#e8eaef" font-family="system-ui,sans-serif" font-size="10" font-weight="600">NK</text>
+  <circle cx="360" cy="360" r="24" fill="#242628" stroke="#353b45"/>
+  <text x="360" y="365" text-anchor="middle" fill="#e8eaef" font-family="system-ui,sans-serif" font-size="10" font-weight="600">VT</text>
+  <text x="80" y="390" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Coding</text>
+  <text x="180" y="390" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">AI</text>
+  <text x="280" y="390" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">DSA</text>
+  <text x="380" y="390" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Projects</text>
+  <text x="500" y="390" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Placements</text>
+  <text x="620" y="390" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Community</text>
+</svg>

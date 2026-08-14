@@ -1,0 +1,52 @@
+!.env.example
+!.env.example
+# debug
+# dependencies
+# local env files
+# misc
+# next.js
+# production
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# supabase local CLI cache (versions, project ref)
+# testing
+# typescript
+# vercel
+graphify*
+
+
+scripts* 
+
+
+
+
+*.pem
+*.tsbuildinfo
+.agent*
+.cursor
+.DS_Store
+.env*
+.env*
+.env*.local
+.env.prod
+.fallow*
+.gemini
+.pnp.js
+.vercel
+.yarn/install-state.gz
+/.next/
+/.pnp
+/build
+/coverage
+/node_modules
+/out/
+codebase.txt
+codebase/
+debug-*.log
+docs
+next-env.d.ts
+npm-debug.log*
+output.txt
+script.py
+supabase/.temp/
+yarn-debug.log*
+yarn-error.log*

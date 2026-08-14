@@ -1,0 +1,51 @@
+# debug
+# dependencies
+# env files
+# husky and local hook caches
+# misc
+# next.js
+# production
+# typescript
+*.pem
+*.tsbuildinfo
+.agent*
+.ami*
+.impeccable*
+
+.cursor
+.DS_Store
+.env*
+.env*.local
+.env*
+.eslintcache
+.fallow*
+.gemini*
+.husky/_/
+.pnpm-debug.log*
+.prettier-cache
+.prettiercache
+.skills
+/.next/
+/build
+/node_modules
+/out/
+codebase_scanner.py
+# Ignore local docs scratch, but track the Vitest teammate setup guide.
+docs/**
+!docs/VITEST_UI_TESTING_SETUP.md
+graphify-out*
+lms_code.txt
+next-env.d.ts
+npm-debug.log*
+PRODUCT.MD
+scratch*
+# Ignore local scripts directory contents, but track the Vitest setup checker.
+/scripts/**
+!/scripts/check-vitest-ui-setup.mjs
+yarn-debug.log*
+yarn-error.log*
+
+# test / playwright artifacts (Vitest + Playwright source under tests/ is tracked)
+/playwright-report/
+/test-results/
+/playwright/

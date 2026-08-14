@@ -1,0 +1,60 @@
+{
+  "startedAt": "2026-07-17T09:59:35.106Z",
+  "method": "rest_service_role",
+  "supabaseUrlHost": "afgnktqrevcxbrimtdlx.supabase.co",
+  "table": "note_payment_orders",
+  "column": "student_id",
+  "getExisting": {
+    "error": null,
+    "rowCount": 1,
+    "row": {
+      "id": "ec2a42d4-503a-47b6-839b-631239f2155f",
+      "student_id": "6e6e4dbd-a1a9-4b7d-a67a-32b44684def4"
+    }
+  },
+  "patchNull": {
+    "id": "ec2a42d4-503a-47b6-839b-631239f2155f",
+    "error": null,
+    "success": true,
+    "after": {
+      "id": "ec2a42d4-503a-47b6-839b-631239f2155f",
+      "student_id": null
+    }
+  },
+  "patchRestore": {
+    "id": "ec2a42d4-503a-47b6-839b-631239f2155f",
+    "originalStudentId": "6e6e4dbd-a1a9-4b7d-a67a-32b44684def4",
+    "error": null,
+    "success": true,
+    "after": {
+      "id": "ec2a42d4-503a-47b6-839b-631239f2155f",
+      "student_id": "6e6e4dbd-a1a9-4b7d-a67a-32b44684def4"
+    }
+  },
+  "insertNull": null,
+  "openApi": {
+    "httpStatus": 200,
+    "ok": true,
+    "contentType": "application/openapi+json; charset=utf-8",
+    "definitionFound": true,
+    "studentIdProperty": {
+      "type": "string",
+      "format": "uuid",
+      "x-nullable": null,
+      "nullable": null,
+      "description": "Owning student when present. SET NULL on student deletion so invoices and payment history remain.\n\nNote:\nThis is a Foreign Key to `students.id`.<fk table='students' column='id'/>"
+    },
+    "inRequiredArray": false,
+    "xNullable": null,
+    "nullable": null,
+    "type": "string",
+    "parseNote": "Matched definition key: note_payment_orders"
+  },
+  "conclusion": {
+    "studentIdNullable": true,
+    "setNullWriteWorks": true,
+    "rationale": "PATCH set student_id=null succeeded then restored original; column is nullable and SET NULL write path works"
+  },
+  "errors": [],
+  "finishedAt": "2026-07-17T09:59:38.777Z"
+}

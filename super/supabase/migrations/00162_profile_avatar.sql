@@ -1,0 +1,5 @@
+-- Profile avatar
+ALTER TABLE public.profiles
+  ADD COLUMN IF NOT EXISTS avatar_url text;
+
+COMMENT ON COLUMN public.profiles.avatar_url IS 'Public URL for student profile photo';

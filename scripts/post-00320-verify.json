@@ -1,0 +1,112 @@
+﻿{
+    "startedAt":  "2026-07-17T09:28:11.612Z",
+    "method":  "rest_service_role",
+    "supabaseUrlHost":  "afgnktqrevcxbrimtdlx.supabase.co",
+    "eventTypeProbes":  {
+                            "account_welcome":  {
+                                                    "eventType":  "account_welcome",
+                                                    "insertOk":  true,
+                                                    "insertedId":  "eaacd309-c4ee-4ef8-a25f-296686d194c6",
+                                                    "insertError":  null,
+                                                    "deleteOk":  true,
+                                                    "deleteError":  null
+                                                },
+                            "campus_ambassador_approval":  {
+                                                               "eventType":  "campus_ambassador_approval",
+                                                               "insertOk":  true,
+                                                               "insertedId":  "69da2257-08b6-44cb-a07f-4121621fefd1",
+                                                               "insertError":  null,
+                                                               "deleteOk":  true,
+                                                               "deleteError":  null
+                                                           },
+                            "google_welcome":  {
+                                                   "eventType":  "google_welcome",
+                                                   "insertOk":  true,
+                                                   "insertedId":  "1ec496dc-f070-468b-90aa-3437508132dc",
+                                                   "insertError":  null,
+                                                   "deleteOk":  true,
+                                                   "deleteError":  null
+                                               },
+                            "payment_confirmation":  {
+                                                         "eventType":  "payment_confirmation",
+                                                         "insertOk":  true,
+                                                         "insertedId":  "0307bec4-e287-47df-9277-d6a41acd0008",
+                                                         "insertError":  null,
+                                                         "deleteOk":  true,
+                                                         "deleteError":  null
+                                                     }
+                        },
+    "fakeEventTypeProbe":  {
+                               "eventType":  "should_fail_xyz",
+                               "insertOk":  false,
+                               "insertError":  {
+                                                   "code":  "23514",
+                                                   "message":  "new row for relation \"lms_email_outbox\" violates check constraint \"lms_email_outbox_event_type_check\"",
+                                                   "details":  "Failing row contains (36ada869-b1aa-4a14-b887-54a3db4be87d, should_fail_xyz, null, null, null, null, verify-00320+should-fail-xyz@example.invalid, verify-00320 probe, \u003cp\u003eprobe\u003c/p\u003e, probe, transactional_essential, queued, null, null, verify-00320-should_fail_xyz-1784280493785-bu15sd0d, 0, 5, 2026-07-17 09:28:13.70433+00, null, null, null, {\"_verify\": true, \"eventType\": \"should_fail_xyz\", \"migration\": \"..., null, 2026-07-17 09:28:13.70433+00, 2026-07-17 09:28:13.70433+00).",
+                                                   "hint":  null
+                                               },
+                               "deleteOk":  null,
+                               "expectedFail":  true,
+                               "failedAsExpected":  true
+                           },
+    "campusAmbassador":  {
+                             "applicationsByStatus":  {
+                                                          "approved":  2
+                                                      },
+                             "ambassadorsCount":  2,
+                             "error":  null,
+                             "applicationsTotal":  2
+                         },
+    "pgVerify":  {
+                     "error":  "FATAL XX000: (ENOTFOUND) tenant/user postgres.afgnktqrevcxbrimtdlx not found",
+                     "studentIdNullable":  null,
+                     "connected":  false,
+                     "command":  "node scripts/verify-lifecycle-00320.mjs (no --apply)",
+                     "note":  "PG pooler/direct still unreachable; cannot confirm student_id nullability via information_schema. REST event-type probes confirm 00320 check constraint is live.",
+                     "attempted":  true,
+                     "studentIdFk":  null
+                 },
+    "errors":  [
+
+               ],
+    "finishedAt":  "2026-07-17T09:29:34.5152447Z",
+    "summary":  {
+                    "fakeRejected":  true,
+                    "caAmbassadors":  2,
+                    "caApplicationsApproved":  2,
+                    "eventTypesAllOk":  true
+                },
+    "migrationHistory":  {
+                             "pgConnected":  false,
+                             "userConfirmed":  "Finished supabase db push for 00320 (user-applied)",
+                             "pgQueryAttempted":  false,
+                             "versionHint":  "00320_student_delete_financial_retain_and_email_events"
+                         },
+    "typegen":  {
+                    "reason":  "Regeneration failed Unauthorized; left hand-maintained types untouched per policy (no inventing schema / no manual edit of generated types). NotePaymentOrdersRow.student_id remains string in lms/types/database.ts.",
+                    "typesUpdated":  false,
+                    "linked":  {
+                                   "error":  "Unauthorized (LegacyGenTypesUnexpectedStatusError)",
+                                   "exit":  1
+                               },
+                    "projectId":  {
+                                      "projectId":  "afgnktqrevcxbrimtdlx",
+                                      "error":  "Unauthorized (LegacyGenTypesUnexpectedStatusError)",
+                                      "exit":  1
+                                  }
+                },
+    "unitTests":  {
+                      "lms":  {
+                                  "fail":  0,
+                                  "command":  "node --import tsx --test tests/unit/lifecycle-bugs.test.ts",
+                                  "pass":  7,
+                                  "exit":  0
+                              },
+                      "super":  {
+                                    "fail":  0,
+                                    "command":  "node --import tsx --test tests/unit/referral-parity.test.ts tests/unit/campus-ambassador-approval-email.test.ts",
+                                    "pass":  3,
+                                    "exit":  0
+                                }
+                  }
+}

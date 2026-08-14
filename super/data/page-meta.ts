@@ -1,0 +1,43 @@
+import type { PageId } from "./navigation";
+
+export const pageMeta: Record<PageId, { title: string; subtitle: string }> = {
+    dashboard: { title: 'Dashboard', subtitle: 'Ops overview across colleges, students, and platform health.' },
+    'college-leads': { title: 'College Leads', subtitle: 'Contact requests, demo bookings, and partnership enquiries.' },
+    colleges: { title: 'Partner Colleges', subtitle: 'Tenant management: admins, plans, seat limits, modules.' },
+    students: { title: 'Students', subtitle: 'Search and manage learners across all colleges.' },
+    placements: { title: 'Placements', subtitle: 'Verify claims, collect proof, report outcomes.' },
+    jobs: { title: 'Jobs', subtitle: 'Create and manage job postings visible to students.' },
+    'master-courses': { title: 'Master Courses', subtitle: 'Organize and manage your top-level content pillars' },
+    bootcamps: { title: 'Paid Course Builder', subtitle: 'Create and manage standalone paid courses for direct student enrollment.' },
+    'free-courses': {
+        title: 'Free Courses',
+        subtitle: 'Create curated free courses using selected YouTube playlist lectures and platform-only premium lectures.',
+    },
+    'course-pricing': { title: 'Course Pricing', subtitle: 'Manage global pricing and B2C purchase variants for master courses.' },
+    variants: { title: 'Variants', subtitle: 'Create packaged subsets of Master Courses. Variants reference existing content — no duplication.' },
+    bundles: { title: 'Bundles', subtitle: 'Package multiple variants, courses, or items together. Bundles never create TPStreams folders.' },
+    assignments: { title: 'Assignments', subtitle: 'Assign courses, variants, and bundles to colleges or students. Entitlements are automatically generated.' },
+    users: { title: 'Users & Roles', subtitle: 'RBAC roles, permissions matrix.' },
+    audit: { title: 'Audit Logs', subtitle: 'Who changed what — operational accountability.' },
+    'learning-analytics': {
+        title: 'Learning Analytics',
+        subtitle: 'College and student video learning metrics from Supabase.',
+    },
+    'commerce-orders': { title: 'Orders', subtitle: 'Manage and monitor all platform orders.' },
+    'commerce-payments': { title: 'Payments', subtitle: 'Monitor all individual payment transactions across gateways.' },
+    'commerce-revenue': { title: 'Revenue', subtitle: 'Track revenue and sales analytics.' },
+    'commerce-coupons': { title: 'Coupons', subtitle: 'Create and manage discount coupons for the platform.' },
+    'campus-ambassadors': { title: 'Campus Ambassadors', subtitle: 'CA program: applications, payouts, and analytics.' },
+    'email-center': { title: 'Email Center', subtitle: 'Create and manage email campaigns for your platform.' },
+    mentorship: {
+        title: 'Mentorship',
+        subtitle: 'Schedule Job Ready Bootcamp founder mentorship sessions and notify enrolled students.',
+    },
+    tpstreams: { title: 'TPStreams', subtitle: 'Video infrastructure monitoring, health checks, and asset management.' },
+    announcements: { title: 'Announcements', subtitle: 'Create and manage global announcement banners for students.' },
+    'sheets': { title: 'Sheet-Styled Courses', subtitle: 'Practice Structured Patterns to crack product' },
+    'notes': { title: 'Notes Library', subtitle: 'Create and manage handwritten or scanned note collections for courses.' },
+    'resources': { title: 'Resources', subtitle: 'Manage course resource sections — links, notes, files, and markdown content.' },
+    'team': { title: 'Team', subtitle: 'Manage the people displayed on the public NextGen CTO team page.' },
+    'platform-settings': { title: 'Platform Settings', subtitle: 'Feature flags and platform-wide toggles for the student LMS.' },
+};

@@ -1,0 +1,1854 @@
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/bootcamp/page.tsx b/app/c/[collegeSlug]/student/(authenticated)/bootcamp/page.tsx
+index 11f7beb..cefc913 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/bootcamp/page.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/bootcamp/page.tsx
+@@ -30,7 +30,7 @@ const VIRTUAL_BOOTCAMP_PILLAR: VisiblePillarForStudent = {
+   description: null,
+   short_description: null,
+   slug: 'bootcamp',
+-  metadata: null,
++  metadata: {},
+ };
+ 
+ async function resolveBootcampLandingPillar(
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/my-courses/my-courses-tabs.tsx b/app/c/[collegeSlug]/student/(authenticated)/my-courses/my-courses-tabs.tsx
+index 5bfe0c6..3812ff2 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/my-courses/my-courses-tabs.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/my-courses/my-courses-tabs.tsx
+@@ -10,19 +10,34 @@ import { cn } from '@/lib/utils';
+ 
+ type TabKey = 'all' | 'free' | 'paid';
+ 
+-type MyCourseRow = EntitledCourseListItem & {
+-  is_youtube?: boolean;
+-  playlist_id?: string;
++export type YoutubeMyCourseRow = {
++  id: string;
++  title: string;
++  short_description: string | null;
+   thumbnail_url?: string | null;
++  module_count: number;
++  video_count: number;
++  progress_percentage: number;
++  access_label?: string | null;
++  access_level?: 'full' | 'partial';
++  is_youtube: true;
++  playlist_id: string;
+ };
+ 
++export type MyCourseRow = EntitledCourseListItem | YoutubeMyCourseRow;
++
+ interface MyCoursesTabsProps {
+-  courses: EntitledCourseListItem[];
++  courses: MyCourseRow[];
+   collegeSlug: string;
+ }
+ 
++function isEntitledCourse(course: MyCourseRow): course is EntitledCourseListItem {
++  return !('is_youtube' in course && course.is_youtube);
++}
++
+ function isFreeCourse(course: MyCourseRow): boolean {
+-  if (course.is_youtube) return true;
++  if ('is_youtube' in course && course.is_youtube) return true;
++  if (!isEntitledCourse(course)) return false;
+   if (course.is_free) return true;
+   if (course.pricing_model === 'free') return true;
+   const price = course.selling_price;
+@@ -31,14 +46,19 @@ function isFreeCourse(course: MyCourseRow): boolean {
+ }
+ 
+ function CourseCard({ course, collegeSlug }: { course: MyCourseRow; collegeSlug: string }) {
+-  const isYoutube = !!course.is_youtube;
+-  const isVariant = !isYoutube && !!course.variant_id;
+-  const displayTitle = isYoutube ? course.title : (course.variant_title ?? course.title);
++  const isYoutube = 'is_youtube' in course && course.is_youtube;
++  const isVariant = isEntitledCourse(course) && !!course.variant_id;
++  const displayTitle = isYoutube
++    ? course.title
++    : isEntitledCourse(course)
++      ? (course.variant_title ?? course.title)
++      : course.title;
+   const learnUrl = isYoutube
+     ? `/c/${collegeSlug}/student/courses/youtube/${course.playlist_id}`
+     : isVariant
+       ? buildLearnHref(collegeSlug, course.id, { variantId: course.variant_id })
+       : `/c/${collegeSlug}/student/learn/${course.id}`;
++  const thumbnailUrl = isYoutube ? course.thumbnail_url : null;
+ 
+   return (
+     <Link
+@@ -46,9 +66,9 @@ function CourseCard({ course, collegeSlug }: { course: MyCourseRow; collegeSlug:
+       className="group block bg-card border border-border/60 rounded-xl overflow-hidden hover:shadow-md hover:border-primary/20 transition-[box-shadow,border-color] duration-200"
+     >
+       <div className="aspect-video bg-gradient-to-br from-primary/5 to-primary/[0.02] relative overflow-hidden">
+-        {isYoutube && course.thumbnail_url ? (
++        {isYoutube && thumbnailUrl ? (
+           <img
+-            src={course.thumbnail_url}
++            src={thumbnailUrl}
+             alt={displayTitle}
+             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+             referrerPolicy="no-referrer"
+@@ -98,7 +118,7 @@ function CourseCard({ course, collegeSlug }: { course: MyCourseRow; collegeSlug:
+         <h3 className="font-medium text-sm text-foreground mb-0.5 group-hover:text-primary transition-colors line-clamp-1">
+           {displayTitle}
+         </h3>
+-        {isVariant && (
++        {isVariant && isEntitledCourse(course) && (
+           <p className="text-[11px] text-muted-foreground mb-2">Based on: {course.title}</p>
+         )}
+         {course.short_description && !isVariant && (
+@@ -114,7 +134,10 @@ function CourseCard({ course, collegeSlug }: { course: MyCourseRow; collegeSlug:
+ 
+         <div className="mt-3 pt-3 border-t border-border/40 flex items-center justify-between">
+           <span className="text-[11px] text-muted-foreground">
+-            {course.access_label ?? (course.access_level === 'partial' ? 'Partial access' : 'Enrolled')}
++            {course.access_label ??
++              (isEntitledCourse(course) && course.access_level === 'partial'
++                ? 'Partial access'
++                : 'Enrolled')}
+           </span>
+           <span className="text-xs font-medium text-primary flex items-center gap-1">
+             {course.progress_percentage > 0 ? 'Continue' : 'Start'}
+@@ -214,7 +237,11 @@ export function MyCoursesTabs({ courses, collegeSlug }: MyCoursesTabsProps) {
+             ) : (
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                 {groups[t.key].map((course) => (
+-                  <CourseCard key={`${course.id}-${course.variant_id ?? ''}`} course={course} collegeSlug={collegeSlug} />
++                  <CourseCard
++                    key={`${course.id}-${isEntitledCourse(course) ? (course.variant_id ?? '') : 'youtube'}`}
++                    course={course}
++                    collegeSlug={collegeSlug}
++                  />
+                 ))}
+               </div>
+             )}
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/my-courses/page.tsx b/app/c/[collegeSlug]/student/(authenticated)/my-courses/page.tsx
+index 6f0c8b0..0a3009b 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/my-courses/page.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/my-courses/page.tsx
+@@ -1,6 +1,6 @@
+ import { requireStudent } from '@/lib/auth/require-student';
+ import { listStudentEntitledCoursesGroupedByPillar } from '@/lib/services/student-courses';
+-import { MyCoursesTabs } from './my-courses-tabs';
++import { MyCoursesTabs, type MyCourseRow, type YoutubeMyCourseRow } from './my-courses-tabs';
+ import { BookOpen } from 'lucide-react';
+ import Link from 'next/link';
+ import { listStudentFreeYoutubeEnrollments } from '@/lib/services/free-youtube-playlists';
+@@ -29,7 +29,7 @@ export default async function MyCoursesPage({
+       .eq('student_id', studentId)
+   ]);
+ 
+-  const allCourses = [...pillarGroups.flatMap((g) => g.courses)];
++  const allCourses: MyCourseRow[] = [...pillarGroups.flatMap((g) => g.courses)];
+ 
+   // Group completions by playlist_id
+   const completionsCountMap = new Map<string, number>();
+@@ -39,7 +39,7 @@ export default async function MyCoursesPage({
+   });
+ 
+   // Map enrolled YouTube playlists to match unified entitled course structure
+-  const enrolledYoutubeCourses = youtubeEnrollments.map((enrollment) => {
++  const enrolledYoutubeCourses: YoutubeMyCourseRow[] = youtubeEnrollments.map((enrollment) => {
+     const course = catalog.find((c) => c.playlistId === enrollment.playlist_id);
+     const videoCount = course?.videoCount ?? 0;
+     const completedCount = completionsCountMap.get(enrollment.playlist_id) ?? 0;
+@@ -62,8 +62,7 @@ export default async function MyCoursesPage({
+     };
+   });
+ 
+-  // Merge YouTube courses
+-  allCourses.push(...(enrolledYoutubeCourses as any[]));
++  allCourses.push(...enrolledYoutubeCourses);
+ 
+   return (
+     <div className="max-w-7xl mx-auto space-y-8">
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/paid-courses/_components/paid-course-catalog-view.tsx b/app/c/[collegeSlug]/student/(authenticated)/paid-courses/_components/paid-course-catalog-view.tsx
+index b9a8a92..12a292d 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/paid-courses/_components/paid-course-catalog-view.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/paid-courses/_components/paid-course-catalog-view.tsx
+@@ -208,11 +208,15 @@ export function PaidCourseCatalogView({ collegeSlug, data }: PaidCourseCatalogVi
+   const [search, setSearch] = useState('');
+   const [activeCategory, setActiveCategory] = useState('All Paths');
+ 
+-  // Master courses preferred. If not free, it's paid/premium.
++  // Master courses and Paid Course Builder courses in the paid catalog
+   const premiumCourses = useMemo(() => {
+-    return data.discoverableItems.filter(
+-      (c) => c.catalog_kind === 'master_course' && !c.is_free && c.pricing_model !== 'free'
+-    );
++    return data.discoverableItems.filter((c) => {
++      if (c.catalog_kind !== 'master_course') return false;
++      if (c.is_free || c.pricing_model === 'free') return false;
++      if (c.is_enrolled) return true;
++      if (c.paid_source_type === 'paid_course_builder') return true;
++      return c.show_as_paid_course;
++    });
+   }, [data.discoverableItems]);
+ 
+   const featuredCourse = useMemo(() => {
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/paid-courses/load-paid-courses-data.ts b/app/c/[collegeSlug]/student/(authenticated)/paid-courses/load-paid-courses-data.ts
+index 8bbb2c9..729db5a 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/paid-courses/load-paid-courses-data.ts
++++ b/app/c/[collegeSlug]/student/(authenticated)/paid-courses/load-paid-courses-data.ts
+@@ -9,6 +9,12 @@ import { listVisiblePillarsForStudent } from '@/lib/services/student-courses';
+ import type { GlobalDiscoverablePillarGroup } from '@/lib/services/global-courses';
+ import type { MasterCoursePillarsRow } from '@/types/database';
+ import { listDiscoverableBundles, type DiscoverableBundleCard } from '@/lib/services/student-bundles';
++import {
++  isPaidCatalogEligible,
++  isPaidCatalogPremiumItem,
++  isPaidLandingPubliclyVisible,
++  type PaidCourseSourceType,
++} from '@/lib/services/paid-course-catalog';
+ 
+ export type PaidCourseCatalogTab = 'all' | 'bootcamp' | 'paid' | 'free';
+ 
+@@ -30,6 +36,8 @@ export interface PaidCourseCatalogDiscoverableItem {
+   progress_percentage: number | null;
+   is_free: boolean;
+   pricing_model: string | null;
++  show_as_paid_course: boolean;
++  paid_source_type: PaidCourseSourceType;
+   tab: PaidCourseCatalogTab;
+ }
+ 
+@@ -98,6 +106,8 @@ function mapGroups(
+         progress_percentage: course.progress_percentage,
+         is_free: course.is_free,
+         pricing_model: course.pricing_model,
++        show_as_paid_course: course.show_as_paid_course,
++        paid_source_type: course.paid_source_type,
+         tab: classifyDiscoverableTab(course),
+       };
+       discoverableItems.push(item);
+@@ -140,7 +150,19 @@ export async function loadPaidCoursesData(
+       courses: [],
+     }));
+ 
+-  const { pillarGroups, discoverableItems } = mapGroups([...groups, ...extraPillarGroups]);
++  const { pillarGroups: rawPillarGroups, discoverableItems: rawDiscoverableItems } = mapGroups([
++    ...groups,
++    ...extraPillarGroups,
++  ]);
++
++  const discoverableItems = await applyPaidCatalogLandingVisibility(rawDiscoverableItems);
++  const visibleIds = new Set(discoverableItems.map((item) => item.catalog_key));
++  const pillarGroups: PaidCourseCatalogPillarGroup[] = rawPillarGroups
++    .map((group) => ({
++      ...group,
++      courses: group.courses.filter((course) => visibleIds.has(course.catalog_key)),
++    }))
++    .filter((group) => group.courses.length > 0);
+ 
+   const youtubeItems: PaidCourseCatalogYouTubeItem[] = youtubeCatalog.map((course) => ({
+     kind: 'youtube',
+@@ -163,3 +185,52 @@ export async function loadPaidCoursesData(
+     bundles,
+   };
+ }
++
++/** Filter discoverable rows for the paid course catalog (both source types). */
++export function filterPaidCatalogDiscoverableItems(
++  items: PaidCourseCatalogDiscoverableItem[],
++): PaidCourseCatalogDiscoverableItem[] {
++  return items.filter((item) => {
++    if (item.catalog_kind !== 'master_course') return false;
++    if (!isPaidCatalogPremiumItem(item, { isEntitled: item.is_enrolled })) return false;
++    return isPaidCatalogEligible(item, { isEntitled: item.is_enrolled });
++  });
++}
++
++type LandingVisibilityRow = {
++  source_id: string;
++  is_published: boolean;
++  is_visible: boolean;
++};
++
++/** Apply paid_course_landing_metadata visibility for non-entitled catalog rows. */
++export async function applyPaidCatalogLandingVisibility(
++  items: PaidCourseCatalogDiscoverableItem[],
++): Promise<PaidCourseCatalogDiscoverableItem[]> {
++  const eligible = filterPaidCatalogDiscoverableItems(items);
++  if (eligible.length === 0) return [];
++
++  const needsMetaCheck = eligible.filter((item) => !item.is_enrolled);
++  if (needsMetaCheck.length === 0) return eligible;
++
++  const { createAdminClient } = await import('@/lib/supabase/admin');
++  const sb = createAdminClient();
++  const courseIds = [...new Set(needsMetaCheck.map((item) => item.id))];
++
++  const { data: metaRows } = await sb
++    .from('paid_course_landing_metadata')
++    .select('source_id, is_published, is_visible')
++    .in('source_id', courseIds);
++
++  const metaByCourseId = new Map(
++    ((metaRows ?? []) as LandingVisibilityRow[]).map((row) => [row.source_id, row]),
++  );
++
++  return eligible.filter((item) => {
++    if (item.is_enrolled) return true;
++    const meta = metaByCourseId.get(item.id);
++    const hasPaidCatalogFlag =
++      item.paid_source_type === 'paid_course_builder' || item.show_as_paid_course;
++    return isPaidLandingPubliclyVisible(meta, { hasPaidCatalogFlag });
++  });
++}
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/_components/premium-course-landing-client.tsx b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/_components/premium-course-landing-client.tsx
+index 9ffb56e..bd1f5eb 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/_components/premium-course-landing-client.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/_components/premium-course-landing-client.tsx
+@@ -89,6 +89,7 @@ export interface CourseLandingDetail {
+     short_description?: string | null;
+     is_free?: boolean;
+     thumbnail_url?: string;
++    level?: string | null;
+     faqs: CourseLandingFaq[];
+   };
+   entitled: boolean;
+@@ -530,7 +531,7 @@ export function PremiumCourseLandingClient({
+                   </div>
+                   <div className="space-y-1">
+                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Level</span>
+-                    <span className="font-black text-sm">Beginner+</span>
++                    <span className="font-black text-sm">{detail.course.level || 'Beginner+'}</span>
+                   </div>
+                 </div>
+               </div>
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/actions.ts b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/actions.ts
+index 25bab18..f149572 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/actions.ts
++++ b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/actions.ts
+@@ -17,14 +17,79 @@ import { validateStudentCourseAccess } from '@/lib/services/student-entitlements
+ import { grantEntitlement } from '@/lib/services/student-entitlements';
+ import { getVariantPurchaseInfo } from '@/lib/services/variant-purchase';
+ import { loadEntitledVariantIdsForStudent } from '@/lib/services/student-discoverable-catalog';
++import {
++  LEGACY_BOOTCAMP_PILLAR_ID,
++  LEGACY_BOOTCAMP_PILLAR_SLUG,
++  resolvePaidCourseSourceType,
++} from '@/lib/services/paid-course-catalog';
++import { applyMasterCourseKeyFilter } from '@/lib/utils/master-course-key';
+ import type { SellableEntityType } from '@/types/payments';
+ 
++const VIRTUAL_PAID_BUILDER_PILLAR = {
++  id: LEGACY_BOOTCAMP_PILLAR_ID,
++  title: 'Paid Courses',
++};
++
+ export interface ActionResponse<T = unknown> {
+   ok: boolean;
+   data?: T;
+   error?: string;
+ }
+ 
++async function resolvePaidCoursePricing(
++  course: {
++    id: string;
++    selling_price: number | null;
++    currency: string | null;
++    is_free: boolean | null;
++    pricing_model: string | null;
++  },
++  courseId: string,
++  pricePlanId?: string,
++): Promise<{ priceMinor: number; currency: string } | null> {
++  const sb = createAdminClient();
++
++  if (pricePlanId) {
++    const { data: plan } = await sb
++      .from('course_price_plans')
++      .select('id, price_minor, currency')
++      .eq('id', pricePlanId)
++      .eq('master_course_id', courseId)
++      .eq('is_active', true)
++      .maybeSingle();
++
++    if (!plan) return null;
++
++    return {
++      priceMinor: (plan as { price_minor: number }).price_minor,
++      currency: (plan as { currency: string }).currency ?? 'INR',
++    };
++  }
++
++  if (course.selling_price && !course.is_free && course.pricing_model !== 'free') {
++    return {
++      priceMinor: course.selling_price,
++      currency: course.currency ?? 'INR',
++    };
++  }
++
++  const { data: variant } = await sb
++    .from('course_variants')
++    .select('id, selling_price, currency')
++    .eq('master_course_id', courseId)
++    .eq('publish_status', 'published')
++    .order('created_at', { ascending: true })
++    .limit(1)
++    .maybeSingle();
++
++  if (!variant || !(variant as { selling_price: number }).selling_price) return null;
++
++  return {
++    priceMinor: (variant as { selling_price: number }).selling_price,
++    currency: (variant as { currency: string }).currency ?? 'INR',
++  };
++}
++
+ /**
+  * Validate pillar and course independently, respecting student-type visibility.
+  */
+@@ -39,10 +104,48 @@ async function validatePillarAndCourse(
+   courseId: string;
+   priceMinor: number;
+   currency: string;
++  courseSourceType: 'master_course' | 'paid_course_builder';
+ } | null> {
+   const sb = createAdminClient();
+   const visibilityField = ctx.isGlobal ? 'visible_to_global_students' : 'visible_to_college_students';
+ 
++  // Paid Course Builder virtual pillar (legacy slug: bootcamp)
++  if (pillarSlug === LEGACY_BOOTCAMP_PILLAR_SLUG) {
++    const { data: course } = await applyMasterCourseKeyFilter(
++      sb
++        .from('master_courses')
++        .select('id, selling_price, currency, is_free, pricing_model, catalog_type, bootcamp_id, show_as_paid_course')
++        .eq('publish_status', 'published')
++        .eq('catalog_type', 'bootcamp')
++        .not('bootcamp_id', 'is', null),
++      courseId,
++    ).maybeSingle();
++
++    if (!course) return null;
++
++    const resolvedCourseId = course.id as string;
++
++    if (!ctx.isGlobal && ctx.collegeId) {
++      const assignedIds = await resolveCollegeAssignedCourseIdsStatic(ctx.collegeId);
++      const want = normUuid(resolvedCourseId);
++      if (assignedIds.some((id) => normUuid(id) === want)) {
++        return null;
++      }
++    }
++
++    const pricing = await resolvePaidCoursePricing(course, resolvedCourseId, pricePlanId);
++    if (!pricing) return null;
++
++    return {
++      pillarId: VIRTUAL_PAID_BUILDER_PILLAR.id,
++      pillarTitle: VIRTUAL_PAID_BUILDER_PILLAR.title,
++      courseId: resolvedCourseId,
++      priceMinor: pricing.priceMinor,
++      currency: pricing.currency,
++      courseSourceType: 'paid_course_builder',
++    };
++  }
++
+   // 1. Validate pillar exists, published, and student-type-visible
+   const { data: pillar } = await sb
+     .from('master_course_pillars')
+@@ -57,76 +160,43 @@ async function validatePillarAndCourse(
+   const pillarTitle = (pillar as { title: string }).title;
+ 
+   // 2. Validate course exists, belongs to this pillar, published, and student-type-visible
+-  const { data: course } = await sb
+-    .from('master_courses')
+-    .select('id, selling_price, currency, is_free, pricing_model')
+-    .eq('id', courseId)
+-    .eq('pillar_id', pillarId)
+-    .eq('publish_status', 'published')
+-    .eq(visibilityField, true)
+-    .maybeSingle();
++  const { data: course } = await applyMasterCourseKeyFilter(
++    sb
++      .from('master_courses')
++      .select('id, selling_price, currency, is_free, pricing_model, catalog_type, bootcamp_id, show_as_paid_course')
++      .eq('pillar_id', pillarId)
++      .eq('publish_status', 'published')
++      .eq(visibilityField, true),
++    courseId,
++  ).maybeSingle();
+ 
+   if (!course) return null;
+ 
++  const resolvedCourseId = course.id as string;
++
++  if (!course.show_as_paid_course) {
++    return null;
++  }
++
+   // 3. For college students: check if already assigned (shouldn't purchase assigned course)
+   if (!ctx.isGlobal && ctx.collegeId) {
+     const assignedIds = await resolveCollegeAssignedCourseIdsStatic(ctx.collegeId);
+-    const want = normUuid(courseId);
++    const want = normUuid(resolvedCourseId);
+     if (assignedIds.some((id) => normUuid(id) === want)) {
+-      return null; // already assigned — should use "Continue Learning" not purchase
++      return null;
+     }
+   }
+ 
+-  // 4. If a price plan is specified, validate it exists and belongs to this course
+-  if (pricePlanId) {
+-    const { data: plan } = await sb
+-      .from('course_price_plans')
+-      .select('id, price_minor, currency')
+-      .eq('id', pricePlanId)
+-      .eq('master_course_id', courseId)
+-      .eq('is_active', true)
+-      .maybeSingle();
+-
+-    if (!plan) return null;
+-
+-    return {
+-      pillarId,
+-      pillarTitle,
+-      courseId,
+-      priceMinor: (plan as { price_minor: number }).price_minor,
+-      currency: (plan as { currency: string }).currency ?? 'INR',
+-    };
+-  }
+-
+-  // 5. Prefer direct course pricing
+-  if (course.selling_price && !course.is_free && course.pricing_model !== 'free') {
+-    return {
+-      pillarId,
+-      pillarTitle,
+-      courseId,
+-      priceMinor: course.selling_price,
+-      currency: course.currency ?? 'INR',
+-    };
+-  }
+-
+-  // 6. Fallback to legacy variant if course pricing not set
+-  const { data: variant } = await sb
+-    .from('course_variants')
+-    .select('id, selling_price, currency')
+-    .eq('master_course_id', courseId)
+-    .eq('publish_status', 'published')
+-    .order('created_at', { ascending: true })
+-    .limit(1)
+-    .maybeSingle();
+-
+-  if (!variant || !(variant as { selling_price: number }).selling_price) return null;
++  const pricing = await resolvePaidCoursePricing(course, resolvedCourseId, pricePlanId);
++  if (!pricing) return null;
+ 
+   return {
+     pillarId,
+     pillarTitle,
+-    courseId,
+-    priceMinor: (variant as { selling_price: number }).selling_price,
+-    currency: (variant as { currency: string }).currency ?? 'INR',
++    courseId: resolvedCourseId,
++    priceMinor: pricing.priceMinor,
++    currency: pricing.currency,
++    courseSourceType: resolvePaidCourseSourceType(course),
+   };
+ }
+ 
+@@ -156,20 +226,23 @@ async function validatePillarAndCourseVisibility(
+ 
+   if (!pillar) return null;
+ 
+-  const { data: course } = await sb
+-    .from('master_courses')
+-    .select('id')
+-    .eq('id', courseId)
+-    .eq('pillar_id', (pillar as { id: string }).id)
+-    .eq('publish_status', 'published')
+-    .eq(visibilityField, true)
+-    .maybeSingle();
++  const { data: course } = await applyMasterCourseKeyFilter(
++    sb
++      .from('master_courses')
++      .select('id')
++      .eq('pillar_id', (pillar as { id: string }).id)
++      .eq('publish_status', 'published')
++      .eq(visibilityField, true),
++    courseId,
++  ).maybeSingle();
+ 
+   if (!course) return null;
+ 
++  const resolvedCourseId = (course as { id: string }).id;
++
+   if (!ctx.isGlobal && ctx.collegeId) {
+     const assignedIds = await resolveCollegeAssignedCourseIdsStatic(ctx.collegeId);
+-    const want = normUuid(courseId);
++    const want = normUuid(resolvedCourseId);
+     if (assignedIds.some((id) => normUuid(id) === want)) {
+       return null;
+     }
+@@ -178,7 +251,7 @@ async function validatePillarAndCourseVisibility(
+   return {
+     pillarId: (pillar as { id: string }).id,
+     pillarTitle: (pillar as { title: string }).title,
+-    courseId: (course as { id: string }).id,
++    courseId: resolvedCourseId,
+   };
+ }
+ 
+@@ -441,6 +514,7 @@ export async function createGlobalCourseOrderAction(
+     let entityId = courseId;
+     let validatedPillarId: string;
+     let validatedPillarTitle: string;
++    let courseSourceType: 'master_course' | 'paid_course_builder' = 'master_course';
+ 
+     if (variantId) {
+       const variantCtx = await validateVariantPurchaseContext(
+@@ -489,6 +563,7 @@ export async function createGlobalCourseOrderAction(
+       entityId = validated.courseId;
+       validatedPillarId = validated.pillarId;
+       validatedPillarTitle = validated.pillarTitle;
++      courseSourceType = validated.courseSourceType;
+     }
+ 
+     const metadata: Record<string, unknown> = {
+@@ -496,6 +571,8 @@ export async function createGlobalCourseOrderAction(
+       pillar_slug: pillarSlug,
+       pillar_title: validatedPillarTitle,
+       course_id: courseId,
++      course_source_type: courseSourceType,
++      course_source_id: courseId,
+       student_id: ctx.studentId,
+       purchase_flow: ctx.isGlobal ? 'global_direct' : 'college_personal',
+     };
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/page.tsx b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/page.tsx
+index 75a982c..96d6c8c 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/page.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/courses/[courseId]/page.tsx
+@@ -3,58 +3,33 @@ import { notFound, redirect } from 'next/navigation';
+ import { Sparkles } from 'lucide-react';
+ import { createAdminClient } from '@/lib/supabase/admin';
+ import { requireStudent, type StudentContext } from '@/lib/auth/require-student';
+-import { getStudentCourseDetail } from '@/lib/services/student-courses';
+-import { resolveDiscoverableVariantItemScope } from '@/lib/services/student-discoverable-catalog';
+-import { buildLearnHref, buildPillarCourseDetailHref } from '@/lib/utils/variant-learn-url';
+-import { getGlobalCoursePurchaseInfo, getCoursePricePlans } from '@/lib/services/global-courses';
+-import { validateStudentCourseAccess, resolveCollegeAssignedCourseIds } from '@/lib/services/student-entitlements-expanded';
+-import {
+-  resolveStudentCourseScope,
+-  listCourseVariantsForStudentLanding,
+-  type ResolvedVariantInfo,
+-} from '@/lib/services/resolved-course-scope';
++import { resolveCollegeAssignedCourseIds } from '@/lib/services/student-entitlements-expanded';
++import { listCourseVariantsForStudentLanding } from '@/lib/services/resolved-course-scope';
+ import { CourseVariantExplorer } from '@/components/courses/course-variant-explorer';
+ import type { MasterCoursePillarsRow } from '@/types/database';
+-import type { CourseForStudent } from '@/types/student-runtime';
+ import { CoursePlanSelector } from '@/components/courses/course-plan-selector';
+ import {
+   VariantCheckoutSection,
+   VariantCheckoutUnavailable,
+ } from '@/components/courses/variant-checkout-section';
+ import { getVariantPurchaseInfo } from '@/lib/services/variant-purchase';
+-import { loadEntitledVariantIdsForStudent } from '@/lib/services/student-discoverable-catalog';
+-import { resolveVariantIdFromSearchParams } from '@/lib/utils/variant-learn-url';
++import { buildLearnHref, buildPillarCourseDetailHref, resolveVariantIdFromSearchParams } from '@/lib/utils/variant-learn-url';
+ import { normUuid } from '@/lib/utils';
+ import { isUuid } from '@/lib/utils/slug';
+ import { resolveCourseByKey, resolvePillarByKey } from '@/lib/resolvers';
+-import { PremiumCourseLandingClient, type CourseLandingDetail } from './_components/premium-course-landing-client';
++import { applyMasterCourseKeyFilter } from '@/lib/utils/master-course-key';
++import { resolvePaidCourseLandingData } from '@/lib/services/paid-course-landing';
++import { PremiumCourseLandingClient } from './_components/premium-course-landing-client';
+ import { FreeEnrollmentButton } from './_components/free-enrollment-button';
+ 
+ export const dynamic = 'force-dynamic';
+ 
+-interface ModuleItem {
+-  id: string;
+-  title: string;
+-  description: string | null;
+-  item_type?: string;
+-  preview_enabled?: boolean;
+-  publish_status?: string;
+-}
+-
+-interface CourseModule {
+-  id: string;
+-  title: string;
+-  description?: string | null;
+-  items?: ModuleItem[];
+-  item_count?: number;
+-}
+-
+ const VIRTUAL_BOOTCAMP_SLUG = 'bootcamp';
+ 
+ const VIRTUAL_BOOTCAMP_PILLAR = {
+   id: '__bootcamp__',
+   code: 'BOOTCAMP',
+-  title: 'Bootcamp',
++  title: 'Paid Courses',
+   description: null,
+   short_description: null,
+   slug: 'bootcamp',
+@@ -81,14 +56,15 @@ async function validatePillarSlugMatch(
+ ): Promise<MasterCoursePillarsRow | null> {
+   if (pillarSlug === VIRTUAL_BOOTCAMP_SLUG) {
+     const sb = createAdminClient();
+-    const { data: course } = await sb
+-      .from('master_courses')
+-      .select('id')
+-      .eq('id', courseId)
+-      .eq('publish_status', 'published')
+-      .is('pillar_id', null)
+-      .not('bootcamp_id', 'is', null)
+-      .maybeSingle();
++    const { data: course } = await applyMasterCourseKeyFilter(
++      sb
++        .from('master_courses')
++        .select('id')
++        .eq('publish_status', 'published')
++        .is('pillar_id', null)
++        .not('bootcamp_id', 'is', null),
++      courseId,
++    ).maybeSingle();
+     return course ? VIRTUAL_BOOTCAMP_PILLAR : null;
+   }
+ 
+@@ -108,19 +84,25 @@ async function validatePillarSlugMatch(
+ 
+   if (!ctx.isGlobal && !pillar.visible_to_college_students) {
+     const assignedCourseIds = await resolveCollegeAssignedCourseIds(ctx.tenant.id);
+-    const want = normUuid(courseId);
++    const resolvedCourseId = normUuid(courseId);
++    const { data: resolvedRow } = await applyMasterCourseKeyFilter(
++      sb.from('master_courses').select('id'),
++      courseId,
++    ).maybeSingle();
++    const want = normUuid(resolvedRow?.id ?? resolvedCourseId);
+     if (!assignedCourseIds.some((id) => normUuid(id) === want)) {
+       return null;
+     }
+   }
+ 
+-  const { data: course } = await sb
+-    .from('master_courses')
+-    .select('id')
+-    .eq('id', courseId)
+-    .eq('pillar_id', pillar.id)
+-    .eq('publish_status', 'published')
+-    .maybeSingle();
++  const { data: course } = await applyMasterCourseKeyFilter(
++    sb
++      .from('master_courses')
++      .select('id')
++      .eq('pillar_id', pillar.id)
++      .eq('publish_status', 'published'),
++    courseId,
++  ).maybeSingle();
+ 
+   if (!course) {
+     return null;
+@@ -163,348 +145,72 @@ export default async function PillarCourseDetailPage({
+     redirect(buildPillarCourseDetailHref(collegeSlug, targetPillarSlug, resolvedCourse.slug, explicitVariantId));
+   }
+ 
+-  const effectiveCourseId = resolvedCourse?.id || courseKey;
+-
+-  const pillar = await validatePillarSlugMatch(ctx, pillarSlug, effectiveCourseId);
+-  if (!pillar) {
++  if (!resolvedCourse) {
+     notFound();
+   }
+ 
+-  const isVirtualBootcamp = pillarSlug === VIRTUAL_BOOTCAMP_SLUG;
+-
+-  let entitled = false;
+-  let purchaseInfo = null;
+-  let pricePlans: Awaited<ReturnType<typeof getCoursePricePlans>> = [];
+-  let collegeStudentCourseDetail: CourseForStudent | null = null;
+-
+-  const sb = createAdminClient();
+-  let courseRow: Record<string, unknown> | null = null;
+-
+-  if (ctx.isGlobal) {
+-    const [courseRes, purchaseRes, access, plansRes] = await Promise.all([
+-      (async () => {
+-        let q = sb.from('master_courses')
+-          .select('id, created_at, updated_at, code, title, description, short_description, slug, pillar_id, is_free, pricing_model, selling_price, currency, publish_status, visible_to_college_students, visible_to_global_students, metadata')
+-          .eq('id', effectiveCourseId)
+-          .eq('publish_status', 'published');
+-        if (!isVirtualBootcamp) q = q.eq('pillar_id', pillar.id);
+-        return q.maybeSingle();
+-      })(),
+-      getGlobalCoursePurchaseInfo(effectiveCourseId),
+-      validateStudentCourseAccess(ctx.studentId, effectiveCourseId, {
+-        isGlobal: true,
+-        collegeId: null,
+-      }),
+-      getCoursePricePlans(effectiveCourseId).catch(() => []),
+-    ]);
++  const effectiveCourseId = resolvedCourse.id;
+ 
+-    courseRow = courseRes.data;
+-
+-    if (!courseRow) {
+-      const { data: fallbackCourse } = await (async () => {
+-        let q = sb
+-          .from('master_courses')
+-          .select('id, created_at, updated_at, code, title, description, short_description, slug, pillar_id, is_free, pricing_model, selling_price, currency, publish_status, visible_to_college_students, visible_to_global_students, metadata')
+-          .eq('publish_status', 'published')
+-          .or(`id.eq.${effectiveCourseId},slug.eq.${effectiveCourseId}`);
+-        if (!isVirtualBootcamp) q = q.eq('pillar_id', pillar.id);
+-        return q.maybeSingle();
+-      })();
+-
+-      if (fallbackCourse) {
+-        courseRow = fallbackCourse;
+-        entitled = !!(await validateStudentCourseAccess(ctx.studentId, fallbackCourse.id, {
+-          isGlobal: true,
+-          collegeId: null,
+-        }));
+-      }
+-    } else {
+-      entitled = !!access;
+-    }
+-
+-    purchaseInfo = purchaseRes;
+-    pricePlans = plansRes;
+-  } else {
+-    collegeStudentCourseDetail = await getStudentCourseDetail(collegeSlug, effectiveCourseId, {
+-      variantId: explicitVariantId,
+-    });
+-    if (collegeStudentCourseDetail) {
+-      courseRow = collegeStudentCourseDetail as unknown as Record<string, unknown>;
+-      entitled = !!(await validateStudentCourseAccess(ctx.studentId, effectiveCourseId, {
+-        isGlobal: false,
+-        collegeId: ctx.tenant.id,
+-      }));
+-    }
+-
+-    if (!courseRow) {
+-      const [courseRes, purchaseRes, plansRes] = await Promise.all([
+-        (async () => {
+-          let q = sb.from('master_courses')
+-            .select('id, created_at, updated_at, code, title, description, short_description, slug, pillar_id, is_free, pricing_model, selling_price, currency, publish_status, visible_to_college_students, visible_to_global_students, metadata')
+-            .eq('id', effectiveCourseId)
+-            .eq('publish_status', 'published')
+-            ;
+-          if (isVirtualBootcamp) {
+-            q = q.not('bootcamp_id', 'is', null);
+-          } else {
+-            q = q.eq('visible_to_college_students', true).eq('pillar_id', pillar.id);
+-          }
+-          return q.maybeSingle();
+-        })(),
+-        getGlobalCoursePurchaseInfo(effectiveCourseId),
+-        getCoursePricePlans(effectiveCourseId).catch(() => []),
+-      ]);
+-
+-      courseRow = courseRes.data;
+-      purchaseInfo = purchaseRes;
+-      pricePlans = plansRes;
+-    }
+-  }
+-
+-  if (!courseRow) {
++  const pillar = await validatePillarSlugMatch(ctx, pillarSlug, effectiveCourseId);
++  if (!pillar) {
+     notFound();
+   }
+ 
+-  if (explicitVariantId) {
+-    const catalogVisible = await resolveDiscoverableVariantItemScope(
+-      explicitVariantId,
+-      courseRow.id as string,
+-      ctx.isGlobal ? null : ctx.tenant.id,
+-    );
+-    if (!catalogVisible) {
+-      notFound();
+-    }
+-  }
+-
+-  let variantInfo: ResolvedVariantInfo | null = null;
+-
+-  if (ctx.isGlobal) {
+-    const scope = await resolveStudentCourseScope(
+-      ctx.studentId, courseRow.id as string,
+-      { isGlobal: true, collegeId: null },
+-      explicitVariantId,
+-    );
+-    if (scope.scopeType === 'variant' && scope.variant) {
+-      variantInfo = scope.variant;
+-    }
+-  } else {
+-    const scope = await resolveStudentCourseScope(
+-      ctx.studentId, courseRow.id as string,
+-      { isGlobal: false, collegeId: ctx.tenant.id },
+-      explicitVariantId,
+-    );
+-    if (scope.scopeType === 'variant' && scope.variant) {
+-      variantInfo = scope.variant;
+-    }
+-  }
+-
+-  const masterCourseTitle =
+-    variantInfo?.sourceMasterCourseTitle ?? (courseRow.title as string);
+-
+-  if (variantInfo) {
+-    courseRow = { ...courseRow, title: variantInfo.displayTitle };
++  const landing = await resolvePaidCourseLandingData({
++    collegeSlug,
++    pillarSlug,
++    courseId: effectiveCourseId,
++    studentId: ctx.studentId,
++    isGlobal: ctx.isGlobal,
++    collegeId: ctx.isGlobal ? null : ctx.tenant.id,
++    explicitVariantId,
++  });
++
++  if (!landing) {
++    notFound();
+   }
+ 
+-  const effectiveCourseIdForVariant = variantInfo?.masterCourseId ?? (courseRow.id as string);
+-
+   let variantPurchaseInfo: Awaited<ReturnType<typeof getVariantPurchaseInfo>> = null;
+-  let variantEntitled = entitled;
+-
+   if (explicitVariantId) {
+     variantPurchaseInfo = await getVariantPurchaseInfo(
+       explicitVariantId,
+-      effectiveCourseIdForVariant,
++      landing.sourceId,
+       ctx.isGlobal ? null : ctx.tenant.id,
+     );
+-    const entitledVariantIds = await loadEntitledVariantIdsForStudent(ctx.studentId);
+-    if (entitledVariantIds.has(explicitVariantId)) {
+-      variantEntitled = true;
+-    }
+   }
+ 
+   const courseVariants = await listCourseVariantsForStudentLanding(
+     ctx.studentId,
+-    effectiveCourseIdForVariant,
++    landing.sourceId,
+     { isGlobal: ctx.isGlobal, collegeId: ctx.isGlobal ? null : ctx.tenant.id },
+   );
+ 
+-  const [modulesRes, itemsRes] = await Promise.all([
+-    sb.from('master_course_modules')
+-      .select('id, title, description, master_course_id, sort_order')
+-      .eq('master_course_id', effectiveCourseIdForVariant)
+-      .eq('publish_status', 'published')
+-      .eq('visible_to_students', true)
+-      .order('sort_order', { ascending: true }),
+-    sb.from('master_course_items')
+-      .select('id, module_id, master_course_id, title, description, item_type, publish_status, sort_order, preview_enabled:is_preview')
+-      .eq('master_course_id', effectiveCourseIdForVariant)
+-      .eq('publish_status', 'published')
+-      .order('sort_order', { ascending: true }),
+-  ]);
+-
+-  const fetchedModules = modulesRes.data ?? [];
+-  const fetchedModuleIds = new Set(fetchedModules.map(m => m.id));
+-  const fetchedItems = (itemsRes.data ?? []).filter(item => fetchedModuleIds.has(item.module_id));
+-
+-  const modsData: CourseModule[] = fetchedModules.map(mod => ({
+-    id: mod.id,
+-    title: mod.title,
+-    description: mod.description,
+-    items: fetchedItems.filter(item => item.module_id === mod.id),
+-  }));
+-
+-  let effectiveModsData = modsData;
+-  if (variantInfo && variantInfo.variantItemIds.length > 0) {
+-    const allowedIds = new Set(variantInfo.variantItemIds);
+-    effectiveModsData = modsData
+-      .map(mod => ({
+-        ...mod,
+-        items: (mod.items ?? []).filter(i => allowedIds.has(i.id)),
+-      }))
+-      .filter(mod => (mod.items ?? []).length > 0);
+-  }
+-
+-  const detailHasLessonRows = (collegeStudentCourseDetail?.modules ?? []).some(
+-    (m) => (m.items?.length ?? 0) > 0,
+-  );
+-
+-  const landingModules: CourseModule[] =
+-    collegeStudentCourseDetail !== null && detailHasLessonRows
+-      ? collegeStudentCourseDetail.modules.map((m) => ({
+-          id: m.id,
+-          title: m.title,
+-          description: m.description,
+-          items: (m.items ?? []).map((i) => ({
+-            id: i.id,
+-            title: i.title,
+-            description: i.description,
+-            item_type: i.item_type,
+-            publish_status: i.publish_status,
+-            preview_enabled: i.preview_enabled,
+-          })),
+-        }))
+-      : effectiveModsData;
+-
+-  const descriptionPoints = (() => {
+-    try {
+-      if (!courseRow.description) return [];
+-      const parsed = JSON.parse(courseRow.description as string);
+-      return Array.isArray(parsed) ? parsed : [courseRow.description];
+-    } catch {
+-      return courseRow.description ? [courseRow.description] : [];
+-    }
+-  })();
+-
+-  const learnBaseUrl = (itemId?: string) =>
+-    buildLearnHref(collegeSlug, courseRow!.id as string, {
+-      variantId: variantInfo?.variantId ?? explicitVariantId,
+-      itemId,
+-    });
+-
+-  const detail = {
+-    course: {
+-      id: courseRow.id,
+-      code: courseRow.code,
+-      title: courseRow.title,
+-      description: courseRow.short_description || (descriptionPoints.length > 0 ? descriptionPoints[0] : null),
+-      short_description: courseRow.short_description,
+-      slug: courseRow.slug,
+-      points: descriptionPoints,
+-      is_free: courseRow.is_free,
+-      thumbnail_url: (courseRow.metadata as Record<string, unknown> | null)?.thumbnail_url,
+-      faqs: (() => {
+-        type MetadataObj = Record<string, unknown> & { [k: string]: MetadataObj | unknown };
+-        const getFaqs = (m: MetadataObj | null | undefined) => {
+-          if (!m) return null;
+-          const lp = m.landing_page as MetadataObj | undefined;
+-          return lp?.faq || m.faqs || m.faq || m.FAQs || m.FAQ || m.faq_data || m.curriculum_faqs;
+-        };
+-        const fromDesc = (() => {
+-          try {
+-            if (!courseRow!.description) return null;
+-            const parsed = JSON.parse(courseRow!.description as string);
+-            if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'object') {
+-              return parsed;
+-            }
+-          } catch { return null; }
+-          return null;
+-        })();
+-        const raw = getFaqs(courseRow.metadata as MetadataObj) || getFaqs(pillar.metadata as MetadataObj) || fromDesc || [];
+-        const items = Array.isArray(raw) ? raw : [];
+-        const customFaqs = items.map((f: Record<string, string>) => ({
+-          q: f.q || f.question || f.Question || '',
+-          a: f.a || f.answer || f.Answer || ''
+-        })).filter(f => f.q && f.a);
+-
+-        const defaultFaqs = [
+-          {
+-            q: 'Who is this course for?',
+-            a: 'This course is for students who want structured learning instead of scattered tutorials. The exact level depends on the course difficulty and prerequisites.'
+-          },
+-          {
+-            q: 'Do I need prior experience?',
+-            a: 'Some courses are beginner-friendly, while others require basic programming knowledge. Check the course details and prerequisites before enrolling.'
+-          },
+-          {
+-            q: 'Will I get lifetime access?',
+-            a: 'Access depends on the course plan, college eligibility, or enrollment type. Exact access details are shown before enrollment.'
+-          },
+-          {
+-            q: 'Will my progress be tracked?',
+-            a: 'Yes. Courses inside the LMS include progress tracking, lesson completion, and resume/continue learning support.'
+-          },
+-          {
+-            q: 'Will I get a certificate?',
+-            a: 'Certificate eligibility depends on the course rules and completion requirements.'
+-          }
+-        ];
+-
+-        const existingQuestions = new Set(customFaqs.map(f => f.q.toLowerCase().trim()));
+-        const uniqueDefaults = defaultFaqs.filter(d => !existingQuestions.has(d.q.toLowerCase().trim()));
+-        return [...customFaqs, ...uniqueDefaults];
+-      })(),
+-    },
+-    pillar: {
+-      id: pillar.id,
+-      title: pillar.title,
+-      slug: pillar.slug,
+-    },
+-    module_count: landingModules.length,
+-    video_count: landingModules.reduce((acc, m) => acc + (m.items?.length || 0), 0),
+-    modules: landingModules.map((m) => ({
+-      id: m.id,
+-      title: m.title,
+-      description: m.description,
+-      item_count: m.items?.length || 0,
+-      items: m.items || [],
+-    })),
+-    entitled: variantEntitled,
+-    progress_percentage: null,
+-    variantSourceTitle: variantInfo?.sourceMasterCourseTitle ?? null,
+-  };
++  const learnHref = buildLearnHref(collegeSlug, landing.sourceId, {
++    variantId: explicitVariantId ?? undefined,
++  });
+ 
+   const enrollmentSlot = (
+     <>
+-      {!detail.entitled && (courseRow.is_free || courseRow.pricing_model === 'free') ? (
++      {!landing.isEntitled && landing.isFree ? (
+         <FreeEnrollmentButton
+           collegeSlug={collegeSlug}
+           pillarSlug={pillarSlug}
+-          courseId={effectiveCourseId}
++          courseId={landing.sourceId}
+         />
+-      ) : !detail.entitled && explicitVariantId && variantPurchaseInfo ? (
++      ) : !landing.isEntitled && explicitVariantId && variantPurchaseInfo ? (
+         <VariantCheckoutSection
+           collegeSlug={collegeSlug}
+           pillarSlug={pillarSlug}
+-          courseId={effectiveCourseId}
++          courseId={landing.sourceId}
+           variantId={variantPurchaseInfo.variantId}
+           variantTitle={variantPurchaseInfo.title}
+           priceMinor={variantPurchaseInfo.priceMinor}
+           currency={variantPurchaseInfo.currency}
+           pricingSource={variantPurchaseInfo.pricingSource}
+         />
+-      ) : !detail.entitled && purchaseInfo ? (
++      ) : !landing.isEntitled && (landing.pricePlans.length > 0 || landing.fallbackPriceMinor) ? (
+         <div className="space-y-6">
+-          {pricePlans.length === 0 && (
++          {landing.pricePlans.length === 0 && (
+             <div className="text-center space-y-1">
+               <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/10 border border-primary/20 mb-2">
+                 <Sparkles className="size-3 text-primary" />
+@@ -512,11 +218,11 @@ export default async function PillarCourseDetailPage({
+               </div>
+               <div className="text-4xl font-black tracking-tighter flex items-center justify-center gap-1 text-foreground">
+                 <span className="text-lg font-bold text-primary self-start mt-1">
+-                  {purchaseInfo?.currency === 'INR' ? '₹' : '$'}
++                  {landing.fallbackCurrency === 'INR' ? '₹' : '$'}
+                 </span>
+                 <span>
+-                  {purchaseInfo?.priceMinor
+-                    ? (purchaseInfo.priceMinor / 100).toLocaleString()
++                  {landing.fallbackPriceMinor
++                    ? (landing.fallbackPriceMinor / 100).toLocaleString()
+                     : '---'}
+                 </span>
+               </div>
+@@ -527,15 +233,15 @@ export default async function PillarCourseDetailPage({
+             <CoursePlanSelector
+               collegeSlug={collegeSlug}
+               pillarSlug={pillarSlug}
+-              courseId={effectiveCourseId}
++              courseId={landing.sourceId}
+               isGlobal={ctx.isGlobal}
+-              plans={pricePlans}
+-              fallbackPriceMinor={pricePlans.length === 0 ? (purchaseInfo?.priceMinor ?? null) : null}
+-              fallbackCurrency={purchaseInfo?.currency ?? 'INR'}
++              plans={landing.pricePlans}
++              fallbackPriceMinor={landing.pricePlans.length === 0 ? landing.fallbackPriceMinor : null}
++              fallbackCurrency={landing.fallbackCurrency}
+             />
+           </div>
+         </div>
+-      ) : !detail.entitled ? (
++      ) : !landing.isEntitled ? (
+         <VariantCheckoutUnavailable reason="No price plan or variant price found." />
+       ) : null}
+     </>
+@@ -543,12 +249,12 @@ export default async function PillarCourseDetailPage({
+ 
+   const variantExplorer = (
+     <CourseVariantExplorer
+-      masterCourseTitle={masterCourseTitle}
++      masterCourseTitle={landing.title}
+       variants={courseVariants}
+       activeVariantId={explicitVariantId ?? null}
+       collegeSlug={collegeSlug}
+       pillarSlug={pillarSlug}
+-      courseId={courseRow.id as string}
++      courseId={landing.sourceId}
+     />
+   );
+ 
+@@ -556,10 +262,10 @@ export default async function PillarCourseDetailPage({
+     <PremiumCourseLandingClient
+       collegeSlug={collegeSlug}
+       pillarSlug={pillarSlug}
+-      courseId={effectiveCourseId}
+-      detail={detail as CourseLandingDetail}
++      courseId={landing.sourceId}
++      detail={landing.landingDetail}
+       enrollmentSlot={enrollmentSlot}
+-      learnHref={learnBaseUrl()}
++      learnHref={learnHref}
+       variantExplorer={variantExplorer}
+     />
+   );
+diff --git a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/page.tsx b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/page.tsx
+index f140a47..3d40989 100644
+--- a/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/page.tsx
++++ b/app/c/[collegeSlug]/student/(authenticated)/pillars/[pillarSlug]/page.tsx
+@@ -34,7 +34,7 @@ export default async function PillarPage({ params }: PillarPageProps): Promise<R
+   const isVirtualBootcamp = pillarSlug === VIRTUAL_BOOTCAMP_SLUG;
+ 
+   const pillarData = isVirtualBootcamp
+-    ? { id: '__bootcamp__', title: 'Bootcamp', description: null, short_description: null, slug: VIRTUAL_BOOTCAMP_SLUG, metadata: null }
++    ? { id: '__bootcamp__', title: 'Paid Courses', description: null, short_description: null, slug: VIRTUAL_BOOTCAMP_SLUG, metadata: null }
+     : await getVisiblePillarBySlugForStudent(collegeSlug, pillarSlug);
+ 
+   if (!pillarData) notFound();
+diff --git a/app/c/[collegeSlug]/student/auth/callback/route.ts b/app/c/[collegeSlug]/student/auth/callback/route.ts
+index c65b33a..9293ad7 100644
+--- a/app/c/[collegeSlug]/student/auth/callback/route.ts
++++ b/app/c/[collegeSlug]/student/auth/callback/route.ts
+@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
+ import { createClient } from "@/lib/supabase/server";
+ import { getPortalBaseUrl } from "@/lib/auth/app-url";
+ import { oauthExchangeFailureCode } from "@/lib/auth/oauth-exchange-error";
++import { getSafeNext } from "@/lib/auth/safe-next";
++import {
++  isStudentPasswordResetPath,
++  studentPortalBasePath,
++} from "@/lib/auth/student-auth-urls";
+ import { syncProfile } from "@/lib/auth/profile-sync";
+ 
+ export const dynamic = "force-dynamic";
+ 
+ /**
+  * Auth callback for college-specific student login.
+- * Validates user + student membership, redirects to student home.
++ * Validates user + student membership, redirects to student home or safe next path.
+  * Supabase session is the only source of truth - no custom JWT needed.
+  */
+ export async function GET(
+@@ -19,9 +24,11 @@ export async function GET(
+   const base = new URL(request.url).origin;
+   const normalizedSlug = collegeSlug.trim().toLowerCase();
+   const loginUrl = `/c/${encodeURIComponent(collegeSlug)}/student/login`;
++  const defaultHome = studentPortalBasePath(collegeSlug);
+ 
+   const { searchParams } = new URL(request.url);
+   const code = searchParams.get("code");
++  const safeNext = getSafeNext(searchParams.get("next"), defaultHome);
+ 
+   const supabase = await createClient();
+ 
+@@ -32,11 +39,6 @@ export async function GET(
+       const errorParam = oauthExchangeFailureCode(exchangeError);
+       return NextResponse.redirect(new URL(`${loginUrl}?error=${errorParam}`, base));
+     }
+-
+-    const next = searchParams.get('next');
+-    if (next && next.startsWith('/')) {
+-      return NextResponse.redirect(new URL(next, base));
+-    }
+   }
+ 
+   const {
+@@ -48,6 +50,10 @@ export async function GET(
+     return NextResponse.redirect(new URL(`${loginUrl}?error=session`, base));
+   }
+ 
++  if (isStudentPasswordResetPath(safeNext, collegeSlug)) {
++    return NextResponse.redirect(new URL(safeNext, base));
++  }
++
+   const [resolvedResult, profileResult] = await Promise.all([
+     supabase
+       .rpc('resolve_student_auth_context', {
+@@ -104,9 +110,7 @@ export async function GET(
+       });
+     }
+ 
+-    return NextResponse.redirect(
+-      `${base}/c/${encodeURIComponent(resolvedSlug)}/student`,
+-    );
++    return NextResponse.redirect(new URL(safeNext, base));
+   }
+ 
+   if (resolved.error_code === 'account_disabled') {
+diff --git a/app/c/[collegeSlug]/student/forgot-password/page.tsx b/app/c/[collegeSlug]/student/forgot-password/page.tsx
+index 4bc90c5..5eff13c 100644
+--- a/app/c/[collegeSlug]/student/forgot-password/page.tsx
++++ b/app/c/[collegeSlug]/student/forgot-password/page.tsx
+@@ -5,10 +5,21 @@ import React, { useState } from 'react';
+ import Link from 'next/link';
+ import { useParams } from 'next/navigation';
+ import { createClient } from '@/lib/supabase/client';
++import { getStudentPasswordResetRedirectUrl } from '@/lib/auth/student-auth-urls';
+ import { useTenant } from '@/providers/tenant-provider';
+ import { Button } from '@/components/ui/button';
+ import { Input } from '@/components/ui/input';
+ 
++function isRateLimitOrNetworkError(message: string): boolean {
++  const normalized = message.toLowerCase();
++  return (
++    normalized.includes('rate') ||
++    normalized.includes('too many') ||
++    normalized.includes('network') ||
++    normalized.includes('fetch')
++  );
++}
++
+ export default function StudentForgotPasswordPage(): ReactNode {
+   const params = useParams();
+   const { branding } = useTenant();
+@@ -25,25 +36,49 @@ export default function StudentForgotPasswordPage(): ReactNode {
+     setError(null);
+     setSent(false);
+     setLoading(true);
++
++    const normalizedEmail = email.trim().toLowerCase();
++    if (!normalizedEmail || !normalizedEmail.includes('@')) {
++      setError('Enter a valid email address.');
++      setLoading(false);
++      return;
++    }
++
+     try {
+       await fetch('/api/student/auth-events', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+-        body: JSON.stringify({ event: 'password_reset_requested', slug: collegeSlug, email }),
++        body: JSON.stringify({
++          event: 'password_reset_requested',
++          slug: collegeSlug,
++          email: normalizedEmail,
++        }),
+       }).catch(() => undefined);
+ 
+       const supabase = createClient();
+-      const baseUrl = window.location.origin;
+-      const redirectTo = `${baseUrl}/c/${encodeURIComponent(collegeSlug)}/student/auth/callback?next=/c/${encodeURIComponent(collegeSlug)}/student/reset-password`;
+-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
++      const redirectTo = getStudentPasswordResetRedirectUrl(
++        collegeSlug,
++        window.location.origin,
++      );
++      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
++        normalizedEmail,
++        { redirectTo },
++      );
++
+       if (resetError) {
+-        setError(resetError.message);
+-        setLoading(false);
+-        return;
++        if (isRateLimitOrNetworkError(resetError.message)) {
++          setError(
++            'We could not send the reset link right now. Please try again after some time.',
++          );
++          return;
++        }
+       }
++
+       setSent(true);
+     } catch {
+-      setError('Something went wrong. Try again.');
++      setError(
++        'We could not send the reset link right now. Please try again after some time.',
++      );
+     } finally {
+       setLoading(false);
+     }
+@@ -54,7 +89,7 @@ export default function StudentForgotPasswordPage(): ReactNode {
+       <div className="w-full max-w-sm space-y-6 rounded-2xl border bg-card p-8 shadow-lg">
+         <div className="space-y-1">
+           <h1 className="text-2xl font-semibold tracking-tight">Reset password</h1>
+-          <p className="text-sm text-muted-foreground">Student Portal . {branding.name}</p>
++          <p className="text-sm text-muted-foreground">Student Portal · {branding.name}</p>
+         </div>
+ 
+         <form onSubmit={handleSubmit} className="space-y-4">
+@@ -75,7 +110,7 @@ export default function StudentForgotPasswordPage(): ReactNode {
+           {error && <p className="text-sm text-destructive">{error}</p>}
+           {sent && (
+             <p className="text-sm text-muted-foreground">
+-              If that email exists, a reset link has been sent. Please check your inbox.
++              If an account exists for this email, we have sent a password reset link.
+             </p>
+           )}
+ 
+@@ -91,4 +126,3 @@ export default function StudentForgotPasswordPage(): ReactNode {
+     </div>
+   );
+ }
+-
+diff --git a/app/c/[collegeSlug]/student/reset-password/page.tsx b/app/c/[collegeSlug]/student/reset-password/page.tsx
+index 50f73d4..75d989f 100644
+--- a/app/c/[collegeSlug]/student/reset-password/page.tsx
++++ b/app/c/[collegeSlug]/student/reset-password/page.tsx
+@@ -38,22 +38,54 @@ export default function StudentResetPasswordPage(): ReactNode {
+   );
+ 
+   const loginHref = `/c/${encodeURIComponent(collegeSlug)}/student/login`;
++  const forgotHref = `/c/${encodeURIComponent(collegeSlug)}/student/forgot-password`;
+ 
+   useEffect(() => {
+     let cancelled = false;
+ 
+-    async function checkSession() {
++    async function establishRecoverySession() {
+       const supabase = createClient();
++      const url = new URL(window.location.href);
++      const code = url.searchParams.get('code');
++
++      if (code) {
++        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
++        if (exchangeError) {
++          if (!cancelled) setState({ noSession: true, ready: true });
++          return;
++        }
++        url.searchParams.delete('code');
++        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
++      }
++
++      const hash = window.location.hash;
++      if (hash.includes('access_token') && hash.includes('refresh_token')) {
++        const hashParams = new URLSearchParams(hash.slice(1));
++        const access_token = hashParams.get('access_token');
++        const refresh_token = hashParams.get('refresh_token');
++        if (access_token && refresh_token) {
++          const { error: sessionError } = await supabase.auth.setSession({
++            access_token,
++            refresh_token,
++          });
++          if (sessionError) {
++            if (!cancelled) setState({ noSession: true, ready: true });
++            return;
++          }
++          window.history.replaceState({}, '', window.location.pathname);
++        }
++      }
++
++      const { data, error: sessionError } = await supabase.auth.getSession();
+       if (cancelled) return;
+-      const { data, error: userError } = await supabase.auth.getUser();
+ 
+-      if (userError || !data?.user) {
++      if (sessionError || !data.session) {
+         setState({ noSession: true });
+       }
+       setState({ ready: true });
+     }
+ 
+-    checkSession();
++    void establishRecoverySession();
+     return () => { cancelled = true; };
+   }, []);
+ 
+@@ -78,7 +110,8 @@ export default function StudentResetPasswordPage(): ReactNode {
+         return;
+       }
+ 
+-      push(`/c/${encodeURIComponent(collegeSlug)}/student`);
++      await supabase.auth.signOut();
++      push(`${loginHref}?reset=success`);
+     } catch {
+       setState({ error: 'Something went wrong. Try again.', loading: false });
+     }
+@@ -98,12 +131,17 @@ export default function StudentResetPasswordPage(): ReactNode {
+         <div className="w-full max-w-sm space-y-6 rounded-2xl border bg-card p-8 shadow-lg">
+           <div className="space-y-1">
+             <h1 className="text-2xl font-semibold tracking-tight">Invalid Link</h1>
+-            <p className="text-sm text-muted-foreground">Student Portal . {branding.name}</p>
++            <p className="text-sm text-muted-foreground">Student Portal · {branding.name}</p>
+           </div>
+-          <p className="text-sm text-destructive">This reset link is invalid or expired. Please request a new one.</p>
+-          <Button variant="outline" className="w-full h-10 rounded-xl" onClick={() => push(loginHref)}>
+-            Go to sign in
++          <p className="text-sm text-destructive">
++            This reset link is invalid or expired. Please request a new one.
++          </p>
++          <Button variant="outline" className="w-full h-10 rounded-xl" onClick={() => push(forgotHref)}>
++            Request new link
+           </Button>
++          <p className="text-center text-xs text-muted-foreground">
++            <Link href={loginHref} className="underline-offset-4 hover:underline">Back to sign in</Link>
++          </p>
+         </div>
+       </div>
+     );
+@@ -114,7 +152,7 @@ export default function StudentResetPasswordPage(): ReactNode {
+       <div className="w-full max-w-sm space-y-6 rounded-2xl border bg-card p-8 shadow-lg">
+         <div className="space-y-1">
+           <h1 className="text-2xl font-semibold tracking-tight">Set a new password</h1>
+-          <p className="text-sm text-muted-foreground">Student Portal . {branding.name}</p>
++          <p className="text-sm text-muted-foreground">Student Portal · {branding.name}</p>
+         </div>
+ 
+         <form onSubmit={handleSubmit} className="space-y-4">
+diff --git a/components/auth/unified-auth-screen.tsx b/components/auth/unified-auth-screen.tsx
+index 7ef96a6..1a734f6 100644
+--- a/components/auth/unified-auth-screen.tsx
++++ b/components/auth/unified-auth-screen.tsx
+@@ -8,6 +8,7 @@ import React, { useSyncExternalStore, useState, useEffect, useCallback } from "r
+ import { useRouter, useParams } from "next/navigation";
+ import { createClient } from "@/lib/supabase/client";
+ import { getAuthRedirectUrl, getClientBaseUrl } from "@/lib/auth/app-url";
++import { getStudentOAuthCallbackUrl } from "@/lib/auth/student-auth-urls";
+ import { Button } from "@/components/ui/button";
+ import { Input } from "@/components/ui/input";
+ import {
+@@ -94,6 +95,9 @@ function getSharedAuthUrlErrorMessage(err: string | null): string | null {
+   if (err === "session") {
+     return "Your sign-in session could not be completed. Please try again.";
+   }
++  if (err === "oauth_failed") {
++    return "Google sign-in failed. Please try again.";
++  }
+   return null;
+ }
+ 
+@@ -221,6 +225,7 @@ export function UnifiedAuthScreen({ mode, searchParams = {} }: { mode: UnifiedAu
+       ? params.collegeSlug
+       : "";
+   const qErr = getQuery("error");
++  const resetSuccess = getQuery("reset") === "success";
+   const sharedUrlError = getSharedAuthUrlErrorMessage(qErr);
+   const tenantUrlError =
+     mode === "tenant" ? getTenantUrlErrorMessage(qErr) : null;
+@@ -408,7 +413,11 @@ export function UnifiedAuthScreen({ mode, searchParams = {} }: { mode: UnifiedAu
+     setLoading(true);
+     try {
+       const supabase = createClient();
+-      const redirectTo = oauthRedirect();
++      const origin = window.location.origin;
++      const redirectTo =
++        mode === "tenant" && collegeSlug
++          ? getStudentOAuthCallbackUrl(collegeSlug, origin, getQuery("next"))
++          : oauthRedirect();
+       if (process.env.NODE_ENV !== "production") {
+         console.info("[auth/oauth] redirectTo:", redirectTo);
+       }
+@@ -517,7 +526,12 @@ export function UnifiedAuthScreen({ mode, searchParams = {} }: { mode: UnifiedAu
+             </CardHeader>
+             <CardContent className="space-y-4 p-0">
+               <div className="space-y-2">
+-                {message && !displayError && (<div className="rounded-lg border border-[#E8541A]/20 bg-[#E8541A]/0.05 p-2 text-center text-[10px] font-semibold text-[#c2410c] dark:text-[#ffb38a] animate-in zoom-in-95">{message}</div>)}
++                {resetSuccess && !displayError && (
++                  <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-2 text-center text-[10px] font-semibold text-emerald-700 dark:text-emerald-300 animate-in zoom-in-95">
++                    Your password has been updated. Please sign in with your new password.
++                  </div>
++                )}
++                {message && !displayError && !resetSuccess && (<div className="rounded-lg border border-[#E8541A]/20 bg-[#E8541A]/0.05 p-2 text-center text-[10px] font-semibold text-[#c2410c] dark:text-[#ffb38a] animate-in zoom-in-95">{message}</div>)}
+                 {displayError && (<div className={cn("rounded-lg p-2 text-center text-[10px] font-semibold animate-in shake-1", isDark ? "border-red-500/20 bg-red-950/10 text-red-400" : "border-red-100 bg-red-50 text-red-600")}>{displayError}</div>)}
+               </div>
+               <form onSubmit={handleLogin} className="space-y-4">
+diff --git a/components/student/tpstreams-player.tsx b/components/student/tpstreams-player.tsx
+index 2c7e47b..d95d1ba 100644
+--- a/components/student/tpstreams-player.tsx
++++ b/components/student/tpstreams-player.tsx
+@@ -222,6 +222,17 @@ export const TpStreamsPlayer = forwardRef<TpStreamsPlayerRef, TpStreamsPlayerPro
+       }
+     }, [initialPosition]);
+ 
++    const analyticsRef = useRef(analytics);
++    const onTimeUpdatePropRef = useRef(onTimeUpdate);
++
++    useEffect(() => {
++      analyticsRef.current = analytics;
++    }, [analytics]);
++
++    useEffect(() => {
++      onTimeUpdatePropRef.current = onTimeUpdate;
++    }, [onTimeUpdate]);
++
+     const stopPolling = useCallback(() => {
+       isPlayingPollRef.current = false;
+       if (pollingIntervalRef.current) {
+@@ -244,37 +255,11 @@ export const TpStreamsPlayer = forwardRef<TpStreamsPlayerRef, TpStreamsPlayerPro
+           setLiveDuration(duration);
+         }
+         setLiveCurrentTime(currentTime);
+-        handlersRef.current.onTimeUpdateProp?.(currentTime);
+-        handlersRef.current.onTimeUpdate(currentTime, duration);
++        onTimeUpdatePropRef.current?.(currentTime);
++        analyticsRef.current.onTimeUpdate(currentTime, duration);
+       }, 1000);
+     }, []);
+ 
+-    const handlersRef = useRef({
+-      onPlay: analytics.onPlay,
+-      onPause: analytics.onPause,
+-      onTimeUpdate: analytics.onTimeUpdate,
+-      onSeek: analytics.onSeek,
+-      onRateChange: analytics.onRateChange,
+-      onEnded: analytics.onEnded,
+-      onTimeUpdateProp: onTimeUpdate,
+-      startPolling,
+-      stopPolling,
+-    });
+-
+-    useEffect(() => {
+-      handlersRef.current = {
+-        onPlay: analytics.onPlay,
+-        onPause: analytics.onPause,
+-        onTimeUpdate: analytics.onTimeUpdate,
+-        onSeek: analytics.onSeek,
+-        onRateChange: analytics.onRateChange,
+-        onEnded: analytics.onEnded,
+-        onTimeUpdateProp: onTimeUpdate,
+-        startPolling,
+-        stopPolling,
+-      };
+-    }, [analytics, onTimeUpdate, startPolling, stopPolling]);
+-
+     const initializeSDK = useCallback(() => {
+       if (!iframeRef.current || !window.Testpress?.Player) return;
+       const keyNow = instanceKeyRef.current;
+@@ -314,8 +299,8 @@ export const TpStreamsPlayer = forwardRef<TpStreamsPlayerRef, TpStreamsPlayerPro
+           });
+ 
+         player.on('play', () => {
+-          handlersRef.current.onPlay();
+-          handlersRef.current.startPolling();
++          analyticsRef.current.onPlay();
++          startPolling();
+         });
+ 
+         player.on('timeupdate', async () => {
+@@ -328,17 +313,17 @@ export const TpStreamsPlayer = forwardRef<TpStreamsPlayerRef, TpStreamsPlayerPro
+             setLiveDuration(duration);
+           }
+           setLiveCurrentTime(currentTime);
+-          handlersRef.current.onTimeUpdateProp?.(currentTime);
+-          handlersRef.current.onTimeUpdate(currentTime, duration);
++          onTimeUpdatePropRef.current?.(currentTime);
++          analyticsRef.current.onTimeUpdate(currentTime, duration);
+         });
+ 
+         player.on('pause', () => {
+-          handlersRef.current.onPause();
+-          handlersRef.current.stopPolling();
++          analyticsRef.current.onPause();
++          stopPolling();
+         });
+ 
+         player.on('seeked', () => {
+-          handlersRef.current.onSeek();
++          analyticsRef.current.onSeek();
+         });
+ 
+         player.on('ratechange', (data?: unknown) => {
+@@ -353,12 +338,12 @@ export const TpStreamsPlayer = forwardRef<TpStreamsPlayerRef, TpStreamsPlayerPro
+               rate = raw;
+             }
+           }
+-          handlersRef.current.onRateChange(rate);
++          analyticsRef.current.onRateChange(rate);
+         });
+ 
+         player.on('ended', () => {
+-          handlersRef.current.stopPolling();
+-          handlersRef.current.onEnded();
++          stopPolling();
++          analyticsRef.current.onEnded();
+         });
+ 
+         player.on('error', (data?: unknown) => {
+@@ -380,7 +365,7 @@ export const TpStreamsPlayer = forwardRef<TpStreamsPlayerRef, TpStreamsPlayerPro
+         console.error('[TpStreamsPlayer] Init failed:', err);
+         setError('Failed to initialize video player.');
+       }
+-    }, [studentId, contentProtectionType, applyResumePrompt, analytics]);
++    }, [studentId, contentProtectionType, applyResumePrompt, analytics, startPolling, stopPolling]);
+ 
+     // Reset SDK attachment when lesson or embed URL changes (new token / navigation).
+     useEffect(() => {
+diff --git a/lib/services/global-courses.ts b/lib/services/global-courses.ts
+index 3dad1c9..a72727f 100644
+--- a/lib/services/global-courses.ts
++++ b/lib/services/global-courses.ts
+@@ -16,6 +16,12 @@ import {
+   mergeDiscoverableCoursesByPillar,
+   type GlobalDiscoverableCourse,
+ } from '@/lib/services/student-discoverable-catalog';
++import {
++  LEGACY_BOOTCAMP_PILLAR_ID,
++  LEGACY_BOOTCAMP_PILLAR_SLUG,
++  paidBuilderPillarPresentation,
++  resolvePaidCourseSourceType,
++} from '@/lib/services/paid-course-catalog';
+ 
+ export type { GlobalDiscoverableCourse, DiscoverableCatalogKind } from '@/lib/services/student-discoverable-catalog';
+ 
+@@ -137,12 +143,12 @@ export async function listGlobalDiscoverableCourses(
+       .eq('publish_status', 'published')
+       .order('sort_order', { ascending: true }),
+     sb.from('master_courses')
+-      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model')
++      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model, show_as_paid_course, catalog_type, bootcamp_id')
+       .eq('publish_status', 'published')
+       .not('pillar_id', 'is', null)
+       .order('title', { ascending: true }),
+     sb.from('master_courses')
+-      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model, bootcamp_id')
++      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model, bootcamp_id, catalog_type, show_as_paid_course')
+       .eq('publish_status', 'published')
+       .eq('catalog_type', 'bootcamp')
+       .not('bootcamp_id', 'is', null)
+@@ -212,13 +218,15 @@ export async function listGlobalDiscoverableCourses(
+       progress_percentage: isEnrolled ? (progressMap.get(course.id)?.percentage ?? 0) : null,
+       is_free: !!course.is_free,
+       pricing_model: course.pricing_model,
++      show_as_paid_course: !!course.show_as_paid_course,
++      paid_source_type: resolvePaidCourseSourceType(course),
+     };
+ 
+     grouped.set(pillarId, [...(grouped.get(pillarId) ?? []), discoverableCourse]);
+   }
+ 
+-  // Add bootcamp courses under a virtual "Bootcamp" pillar
+-  const BOOTCAMP_PILLAR_ID = '__bootcamp__';
++  // Paid Course Builder courses under virtual paid catalog pillar (slug bootcamp for URL compat)
++  const BOOTCAMP_PILLAR_ID = LEGACY_BOOTCAMP_PILLAR_ID;
+   for (const course of validBootcampCourses) {
+     const visibleModules = (modulesRes.data ?? []).filter(
+       (module) =>
+@@ -251,6 +259,8 @@ export async function listGlobalDiscoverableCourses(
+       progress_percentage: entitledIds.has(course.id) ? (progressMap.get(course.id)?.percentage ?? 0) : null,
+       is_free: !!course.is_free,
+       pricing_model: course.pricing_model,
++      show_as_paid_course: true,
++      paid_source_type: 'paid_course_builder',
+     };
+ 
+     grouped.set(BOOTCAMP_PILLAR_ID, [...(grouped.get(BOOTCAMP_PILLAR_ID) ?? []), discoverableCourse]);
+@@ -278,16 +288,17 @@ export async function listGlobalDiscoverableCourses(
+     }))
+     .filter((group) => group.courses.length > 0);
+ 
+-  // Add virtual "Bootcamp" pillar group if there are bootcamp courses
++  // Add virtual paid course builder pillar group if there are builder courses
+   const bootcampGrouped = grouped.get(BOOTCAMP_PILLAR_ID) ?? [];
+   if (bootcampGrouped.length > 0) {
++    const paidBuilderPresentation = paidBuilderPillarPresentation();
+     pillarGroups.unshift({
+       pillar: {
+         id: BOOTCAMP_PILLAR_ID,
+-        title: 'Bootcamp',
+-        description: null,
+-        short_description: null,
+-        slug: 'bootcamp',
++        title: paidBuilderPresentation.title,
++        description: paidBuilderPresentation.description,
++        short_description: paidBuilderPresentation.short_description,
++        slug: LEGACY_BOOTCAMP_PILLAR_SLUG,
+       },
+       courses: bootcampGrouped.sort((a, b) => a.title.localeCompare(b.title)),
+     });
+@@ -323,14 +334,14 @@ export async function listCollegeDiscoverableCourses(
+       .order('sort_order', { ascending: true }),
+     sb
+       .from('master_courses')
+-      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model')
++      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model, show_as_paid_course, catalog_type, bootcamp_id')
+       .eq('publish_status', 'published')
+       .eq('visible_to_college_students', true)
+       .not('pillar_id', 'is', null)
+       .order('title', { ascending: true }),
+     sb
+       .from('master_courses')
+-      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model, bootcamp_id')
++      .select('id, pillar_id, code, title, description, short_description, slug, is_free, pricing_model, bootcamp_id, catalog_type, show_as_paid_course')
+       .eq('publish_status', 'published')
+       .eq('catalog_type', 'bootcamp')
+       .not('bootcamp_id', 'is', null)
+@@ -406,13 +417,14 @@ export async function listCollegeDiscoverableCourses(
+       progress_percentage: isEnrolled ? (progressMap.get(course.id)?.percentage ?? 0) : null,
+       is_free: !!course.is_free || course.pricing_model === 'free',
+       pricing_model: course.pricing_model,
++      show_as_paid_course: !!course.show_as_paid_course,
++      paid_source_type: resolvePaidCourseSourceType(course),
+     };
+ 
+     grouped.set(pillarId, [...(grouped.get(pillarId) ?? []), discoverableCourse]);
+   }
+ 
+-  // Add bootcamp courses under a virtual "Bootcamp" pillar
+-  const BOOTCAMP_PILLAR_ID = '__bootcamp__';
++  const BOOTCAMP_PILLAR_ID = LEGACY_BOOTCAMP_PILLAR_ID;
+   for (const course of validBootcampCourses) {
+     const visibleModules = (modulesRes.data ?? []).filter(
+       (module) =>
+@@ -445,6 +457,8 @@ export async function listCollegeDiscoverableCourses(
+       progress_percentage: entitledIds.has(course.id) ? (progressMap.get(course.id)?.percentage ?? 0) : null,
+       is_free: !!course.is_free || course.pricing_model === 'free',
+       pricing_model: course.pricing_model,
++      show_as_paid_course: true,
++      paid_source_type: 'paid_course_builder',
+     };
+ 
+     grouped.set(BOOTCAMP_PILLAR_ID, [...(grouped.get(BOOTCAMP_PILLAR_ID) ?? []), discoverableCourse]);
+@@ -473,16 +487,17 @@ export async function listCollegeDiscoverableCourses(
+     }))
+     .filter((group) => group.courses.length > 0);
+ 
+-  // Add virtual "Bootcamp" pillar group if there are bootcamp courses
++  // Add virtual paid course builder pillar group if there are builder courses
+   const bootcampGrouped = grouped.get(BOOTCAMP_PILLAR_ID) ?? [];
+   if (bootcampGrouped.length > 0) {
++    const paidBuilderPresentation = paidBuilderPillarPresentation();
+     pillarGroups.unshift({
+       pillar: {
+         id: BOOTCAMP_PILLAR_ID,
+-        title: 'Bootcamp',
+-        description: null,
+-        short_description: null,
+-        slug: 'bootcamp',
++        title: paidBuilderPresentation.title,
++        description: paidBuilderPresentation.description,
++        short_description: paidBuilderPresentation.short_description,
++        slug: LEGACY_BOOTCAMP_PILLAR_SLUG,
+       },
+       courses: bootcampGrouped.sort((a, b) => a.title.localeCompare(b.title)),
+     });
+diff --git a/lib/services/student-discoverable-catalog.ts b/lib/services/student-discoverable-catalog.ts
+index 0fbe1fc..14532ac 100644
+--- a/lib/services/student-discoverable-catalog.ts
++++ b/lib/services/student-discoverable-catalog.ts
+@@ -25,6 +25,10 @@ export interface GlobalDiscoverableCourse {
+   progress_percentage: number | null;
+   is_free: boolean;
+   pricing_model: string | null;
++  /** Paid catalog visibility toggle (pillar master courses). */
++  show_as_paid_course: boolean;
++  /** master_course (pillar) or paid_course_builder (bootcamp container). */
++  paid_source_type: 'master_course' | 'paid_course_builder';
+ }
+ 
+ type VariantRow = {
+@@ -269,6 +273,8 @@ export async function fetchDiscoverableVariantsForCatalog(options: {
+       progress_percentage: progressPercentage,
+       is_free: variant.pricing_model === 'free',
+       pricing_model: variant.pricing_model,
++      show_as_paid_course: false,
++      paid_source_type: 'master_course',
+     });
+   }
+ 
+diff --git a/types/database.ts b/types/database.ts
+index b3ceac5..3868cd7 100644
+--- a/types/database.ts
++++ b/types/database.ts
+@@ -227,6 +227,8 @@ export interface MasterCoursePillarsRow {
+ export interface MasterCoursesRow {
+   id: string;
+   pillar_id: string | null;
++  bootcamp_id: string | null;
++  catalog_type: 'pillar' | 'bootcamp' | 'free_course' | null;
+   code: string;
+   title: string;
+   slug: string | null;
+@@ -243,6 +245,7 @@ export interface MasterCoursesRow {
+   pricing_model: string | null;
+   selling_price: number | null;
+   currency: string | null;
++  show_as_paid_course: boolean | null;
+   tp_folder_status: MasterCourseTpFolderStatus;
+   tp_folder_uuid: string | null;
+   tp_folder_title: string | null;

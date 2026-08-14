@@ -1,0 +1,36 @@
+---
+description: Use Antigravity Kit skills from .agent/skills for higher-quality implementation. Load relevant SKILL.md by task type.
+alwaysApply: true
+---
+
+# Use .agent Skills for Implementation
+
+When the user asks for implementation, debugging, API design, or code review, **use the relevant skill(s)** from `.agent/skills/` so the agent follows documented best practices.
+
+## When to load a skill
+
+- **Read the skill's SKILL.md** when the task matches the skill's domain. Skills use frontmatter `description` to describe when they apply.
+- Prefer **selective reading**: many skills have a "Content Map" or "Selective Reading Rule" — only read the sections/files relevant to the current request.
+
+## Task → skill mapping (use as needed)
+
+| Task / topic | Skill path to use |
+|--------------|-------------------|
+| React, Next.js, performance, SSR, bundles, re-renders | `.agent/skills/nextjs-react-expert/` |
+| API design, REST/GraphQL/tRPC, auth, versioning, errors | `.agent/skills/api-patterns/` |
+| Database schema, migrations, indexing, SQL | `.agent/skills/database-design/` |
+| UI/UX, design systems, accessibility, Tailwind | `.agent/skills/frontend-design/`, `.agent/skills/tailwind-patterns/`, `.agent/skills/web-design-guidelines/` |
+| Debugging, root cause, reproduction steps | `.agent/skills/systematic-debugging/` |
+| Testing, TDD, E2E, Playwright | `.agent/skills/testing-patterns/`, `.agent/skills/tdd-workflow/`, `.agent/skills/webapp-testing/` |
+| Security, vulnerabilities, auth review | `.agent/skills/vulnerability-scanner/`, `.agent/skills/red-team-tactics/` |
+| Deployment, CI/CD, Docker | `.agent/skills/deployment-procedures/` |
+| Node/backend patterns | `.agent/skills/nodejs-best-practices/` |
+| Planning, breakdown, architecture | `.agent/skills/plan-writing/`, `.agent/skills/architecture/`, `.agent/skills/brainstorming/` |
+| Code quality, review checklist, clean code | `.agent/skills/code-review-checklist/`, `.agent/skills/clean-code/` |
+| New feature or app scaffolding | `.agent/skills/app-builder/` |
+
+## How you (the agent) should use this
+
+1. **Before implementing**: If the request touches one of the domains above, open the corresponding skill's `SKILL.md` (and any linked files the skill's Content Map says are relevant).
+2. **Apply the rules**: Follow the skill's instructions and checklists while implementing or reviewing.
+3. **Don't load everything**: Only load skills that match the current task to keep context focused.

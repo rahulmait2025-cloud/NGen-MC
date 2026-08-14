@@ -1,0 +1,79 @@
+{
+  "checkedAt": "2026-07-17T09:10:56.379Z",
+  "projectHost": "afgnktqrevcxbrimtdlx.supabase.co",
+  "httpsAuthHealth": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "bodyPreview": "{\"version\":\"v2.193.0\",\"name\":\"GoTrue\",\"description\":\"GoTrue is a user registration and authentication API\"}"
+  },
+  "restRoot": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "contentType": "application/openapi+json; charset=utf-8",
+    "bodyPreview": "{\"swagger\":\"2.0\",\"info\":{\"description\":\"\",\"title\":\"standard public schema\",\"version\":\"14.4\"},\"host\":\"afgnktqrevcxbrimtdlx.supabase.co:443\",\"basePath\":\"/\",\"schemes\":[\"https\"],\"consumes\":[\"application/j"
+  },
+  "restOk": true,
+  "counts": {
+    "campus_ambassador_applications": {
+      "all": {
+        "status": 206,
+        "ok": true,
+        "count": 2,
+        "contentRange": "*/2",
+        "bodyPreview": "[]"
+      },
+      "status_pending": {
+        "status": 200,
+        "ok": true,
+        "count": 0,
+        "contentRange": "*/0",
+        "bodyPreview": "[]"
+      },
+      "status_approved": {
+        "status": 206,
+        "ok": true,
+        "count": 2,
+        "contentRange": "*/2",
+        "bodyPreview": "[]"
+      },
+      "status_rejected": {
+        "status": 200,
+        "ok": true,
+        "count": 0,
+        "contentRange": "*/0",
+        "bodyPreview": "[]"
+      },
+      "status_null": {
+        "status": 200,
+        "ok": true,
+        "count": 0,
+        "contentRange": "*/0",
+        "bodyPreview": "[]"
+      }
+    },
+    "campus_ambassadors": {
+      "status": 206,
+      "ok": true,
+      "count": 2,
+      "contentRange": "*/2",
+      "bodyPreview": "[]"
+    },
+    "lms_email_outbox": {
+      "status": 200,
+      "ok": true,
+      "totalRowsFetched": 124,
+      "byEventType": {
+        "google_welcome": 14,
+        "payment_confirmation": 52,
+        "batch_enrollment_success": 51,
+        "mentorship_booking_confirmed": 3,
+        "mentorship_payment_confirmation": 3,
+        "mentorship_admin_booking_notification": 1
+      },
+      "bodyPreview": "[{\"event_type\":\"google_welcome\"}, \n {\"event_type\":\"google_welcome\"}, \n {\"event_type\":\"payment_confirmation\"}, \n {\"event_type\":\"payment_confirmation\"}, \n {\"event_type\":\"batch_enrollment_success\"}, \n {\""
+    }
+  },
+  "errors": []
+}

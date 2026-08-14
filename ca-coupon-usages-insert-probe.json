@@ -1,0 +1,95 @@
+﻿{
+    "probed_at":  "2026-07-17T19:43:35.7916632Z",
+    "order_id":  "6664e351-6d53-4a94-9113-8843abe71078",
+    "coupon_code":  "RAHULCTO1222B3",
+    "order":  {
+                  "id":  "6664e351-6d53-4a94-9113-8843abe71078",
+                  "status":  "paid",
+                  "coupon_code":  "RAHULCTO1222B3",
+                  "discount_amount_minor":  7188,
+                  "purchaser_user_id":  "b1c46d3c-2f96-42a7-be1b-9051661340e5",
+                  "purchaser_email":  "rahulmait2025@gmail.com",
+                  "purchaser_name":  "Rahul kumar",
+                  "paid_at":  "2026-07-17T18:57:23.359+00:00",
+                  "total_amount_minor":  52712,
+                  "base_amount_minor":  59900
+              },
+    "coupon":  {
+                   "id":  "27eafd8a-1505-40e3-a7d1-6cd34a701a83",
+                   "code":  "RAHULCTO1222B3",
+                   "uses_count":  0,
+                   "discount_type":  "percentage",
+                   "discount_value":  12,
+                   "status":  "active"
+               },
+    "existing_before":  {
+                            "value":  [
+
+                                      ],
+                            "Count":  0
+                        },
+    "insert_payload":  {
+                           "coupon_id":  "27eafd8a-1505-40e3-a7d1-6cd34a701a83",
+                           "discount_amount_minor":  7188,
+                           "purchaser_user_id":  "b1c46d3c-2f96-42a7-be1b-9051661340e5",
+                           "order_id":  "6664e351-6d53-4a94-9113-8843abe71078",
+                           "purchaser_email":  "rahulmait2025@gmail.com"
+                       },
+    "insert_ok":  false,
+    "insert_error":  {
+                         "code":  "42704",
+                         "details":  null,
+                         "hint":  null,
+                         "message":  "type \"coupon_status\" does not exist"
+                     },
+    "insert_row":  null,
+    "schema_probe":  {
+                         "coupon_code_required":  false,
+                         "coupon_usages_properties":  [
+                                                          "id",
+                                                          "coupon_id",
+                                                          "order_id",
+                                                          "purchaser_user_id",
+                                                          "purchaser_email",
+                                                          "discount_amount_minor",
+                                                          "created_at"
+                                                      ],
+                         "openapi_ok":  true,
+                         "coupon_code_in_properties":  false,
+                         "openapi_error":  null,
+                         "coupon_usages_required":  [
+                                                        "id",
+                                                        "coupon_id",
+                                                        "order_id",
+                                                        "purchaser_email",
+                                                        "discount_amount_minor",
+                                                        "created_at"
+                                                    ]
+                     },
+    "analytics_after":  {
+                            "value":  [
+                                          {
+                                              "coupon_id":  "27eafd8a-1505-40e3-a7d1-6cd34a701a83",
+                                              "coupon_code":  "RAHULCTO1222B3",
+                                              "coupon_status":  "active",
+                                              "ambassador_id":  "74a6af9f-d2d9-43ac-aad1-a844a3a21e1b",
+                                              "user_id":  "02c05faf-1622-4c76-a2a8-870ac1e69629",
+                                              "ambassador_name":  "Rahul Kumar",
+                                              "ambassador_email":  "rahulbornking@gmail.com",
+                                              "college_name":  "MAIT",
+                                              "joined_at":  "2026-07-17T17:43:56.502794+00:00",
+                                              "discount_type":  "percentage",
+                                              "discount_value":  12,
+                                              "total_uses":  0,
+                                              "paid_uses":  0,
+                                              "unique_customers":  0,
+                                              "total_discount_minor":  0,
+                                              "gross_revenue_minor":  0,
+                                              "net_revenue_minor":  0,
+                                              "last_used_at":  null
+                                          }
+                                      ],
+                            "Count":  1
+                        },
+    "paid_uses_after":  0
+}

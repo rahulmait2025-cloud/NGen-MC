@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-07-17T09:25:20.811Z",
+  "projectHint": "postgresql://postgres:***@db.afgnktqrevcxbrimtdlx.supabase.co:5432/postgres",
+  "connectionUsed": null,
+  "preflight": {},
+  "migration": {
+    "applied": false,
+    "command": null,
+    "result": null
+  },
+  "eventTypeProbes": {},
+  "caDataAudit": {},
+  "errors": [
+    "error: (ENOTFOUND) tenant/user postgres.afgnktqrevcxbrimtdlx not found"
+  ],
+  "finishedAt": "2026-07-17T09:25:25.831Z"
+}

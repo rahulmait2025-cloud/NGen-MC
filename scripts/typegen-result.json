@@ -1,0 +1,62 @@
+﻿{
+    "generatedFileNote":  "Contains CLI error JSON only (306 bytes), not Database types",
+    "generatedFile":  "D:\\NextGen\\scripts\\generated-database.types.ts",
+    "cwd":  "D:\\NextGen\\super",
+    "pathsUpdated":  [
+
+                     ],
+    "policy":  "Hand-curated types left untouched because generated output did not confirm student_id nullability (Unauthorized on Management API typegen).",
+    "success":  false,
+    "note_payment_orders":  {
+                                "student_id_nullable":  null,
+                                "migration00320":  "ALTER COLUMN student_id DROP NOT NULL (ON DELETE SET NULL) — pushed per user, but not used to invent types",
+                                "student_id":  null,
+                                "foundInGenerated":  false
+                            },
+    "consumerTypes":  {
+                          "super":  {
+                                        "path":  "D:\\NextGen\\super\\types\\database.ts",
+                                        "hasNotePaymentOrdersRow":  false,
+                                        "updated":  false
+                                    },
+                          "pattern":  "hand-curated Row interfaces (not full supabase-generated Database)",
+                          "lms":  {
+                                      "path":  "D:\\NextGen\\lms\\types\\database.ts",
+                                      "hasNotePaymentOrdersRow":  true,
+                                      "student_id_before":  "string",
+                                      "updated":  false
+                                  },
+                          "clg":  {
+                                      "path":  "D:\\NextGen\\clg\\types\\database.ts",
+                                      "hasNotePaymentOrdersRow":  false,
+                                      "updated":  false
+                                  }
+                      },
+    "attempts":  [
+                     {
+                         "error":  "-o unsupported (expects env|pretty|json|toml|yaml|table|csv)",
+                         "command":  "npx supabase gen types typescript --linked --schema public -o \u003cpath\u003e",
+                         "result":  "failed"
+                     },
+                     {
+                         "exitCode":  1,
+                         "command":  "npx supabase gen types typescript --linked --schema public \u003e generated-database.types.ts",
+                         "error":  "LegacyGenTypesUnexpectedStatusError: Unauthorized",
+                         "result":  "failed"
+                     },
+                     {
+                         "exitCode":  1,
+                         "command":  "supabase gen types typescript --linked --schema public",
+                         "error":  "failed to retrieve generated types: Unauthorized",
+                         "result":  "failed",
+                         "cliVersion":  "2.84.2"
+                     },
+                     {
+                         "error":  "user declined smart-mode approval for reading .env credentials",
+                         "command":  "supabase gen types via DATABASE_URL from .env",
+                         "result":  "skipped"
+                     }
+                 ],
+    "generatedFileValid":  false,
+    "timestamp":  "2026-07-17T09:40:42.2646907Z"
+}

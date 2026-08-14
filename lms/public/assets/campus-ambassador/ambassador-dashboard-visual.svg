@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" fill="none" role="img" aria-label="Ambassador dashboard">
+  <rect width="480" height="400" rx="20" fill="#141820"/>
+  <rect x="24" y="24" width="432" height="72" rx="12" fill="#1c2129" stroke="#353b45"/>
+  <text x="44" y="52" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Ambassador ID</text>
+  <text x="44" y="74" fill="#f3f4f6" font-family="system-ui,sans-serif" font-size="16" font-weight="700">NextGen CTO</text>
+  <rect x="24" y="112" width="432" height="120" rx="12" fill="#1a1c1c" stroke="#FF5F36" stroke-opacity="0.4" stroke-dasharray="8 6"/>
+  <text x="44" y="140" fill="#FF5F36" font-family="system-ui,sans-serif" font-size="10" font-weight="700" letter-spacing="0.1em">COUPON CODE</text>
+  <text x="44" y="178" fill="#FF5F36" font-family="ui-monospace,monospace" font-size="28" font-weight="700" letter-spacing="0.15em">NGC-AMB</text>
+  <rect x="24" y="252" width="200" height="124" rx="12" fill="#1c2129" stroke="#353b45"/>
+  <text x="44" y="280" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Referrals</text>
+  <text x="44" y="312" fill="#f3f4f6" font-family="system-ui,sans-serif" font-size="32" font-weight="700">12</text>
+  <rect x="44" y="328" width="160" height="6" rx="3" fill="#282a2e"/>
+  <rect x="44" y="328" width="96" height="6" rx="3" fill="#FF5F36"/>
+  <rect x="244" y="252" width="212" height="124" rx="12" fill="#1c2129" stroke="#353b45"/>
+  <text x="264" y="280" fill="#aeb4bf" font-family="system-ui,sans-serif" font-size="10">Milestone</text>
+  <circle cx="350" cy="320" r="36" fill="none" stroke="#282a2e" stroke-width="6"/>
+  <circle cx="350" cy="320" r="36" fill="none" stroke="#FF5F36" stroke-width="6" stroke-dasharray="120 226" stroke-linecap="round" transform="rotate(-90 350 320)"/>
+  <text x="350" y="326" text-anchor="middle" fill="#f3f4f6" font-family="system-ui,sans-serif" font-size="14" font-weight="700">Silver</text>
+</svg>
